@@ -1,0 +1,109 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+model Users {
+  id                     String           @id @default(auto()) @map("_id") @db.ObjectId
+  npm                    String           @unique
+  fullname               String?
+  password               String?
+  studyProgramOrPosition StudyOrPosition?
+  ukm                    Ukm?
+  role                   Role             @default(User)
+  createdAt              DateTime         @default(now())
+  updatedAt              DateTime         @default(now())
+  votes                  Votes[]
+
+  @@map("users")
+}
+
+model Elections {
+  id          String       @id @default(auto()) @map("_id") @db.ObjectId
+  title       String
+  type        ElectionType
+  eligibility Eligibility
+  startDate   DateTime
+  endDate     DateTime
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @default(now())
+  candidates  Candidates[]
+  votes       Votes[]
+
+  @@map("elections")
+}
+
+model Candidates {
+  id          String    @id @default(auto()) @map("_id") @db.ObjectId
+  name        String
+  vision      String
+  mission     String
+  image       String
+  voteCount   Int       @default(0)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @default(now())
+  electionsId String    @db.ObjectId
+  elections   Elections @relation(fields: [electionsId], references: [id])
+  votes       Votes[]
+
+  @@map("candidates")
+}
+
+model Votes {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  userId      String   @db.ObjectId
+  electionId  String   @db.ObjectId
+  candidateId String   @db.ObjectId
+  voteAt      DateTime @default(now())
+
+  user      Users      @relation(fields: [userId], references: [id])
+  election  Elections  @relation(fields: [electionId], references: [id])
+  candidate Candidates @relation(fields: [candidateId], references: [id])
+
+  @@unique([userId, electionId])
+  @@map("votes")
+}
+
+enum StudyOrPosition {
+  Akuntansi
+  Perpajakan
+  Manajemen_Informatika    @map("Manajemen Informatika")
+  Manajemen_Bisnis_Digital @map("Manajemen Bisnis Digital")
+  Dosen
+  Akademik
+  Staff
+}
+
+enum Ukm {
+  Bamboo
+  IMSI
+  Futsal
+  Badminton
+}
+
+enum Role {
+  User
+  Admin
+}
+
+enum ElectionType {
+  BEM
+  Himpunan
+  UKM
+}
+
+enum Eligibility {
+  All
+  Akuntansi
+  Perpajakan
+  Manajemen_Informatika    @map("Manajemen Informatika")
+  Manajemen_Bisnis_Digital @map("Manajemen Bisnis Digital")
+  Bamboo
+  IMSI
+  Futsal
+  Badminton
+}
