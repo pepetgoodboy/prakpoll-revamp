@@ -47,7 +47,7 @@ model Candidates {
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @default(now())
   electionsId String    @db.ObjectId
-  elections   Elections @relation(fields: [electionsId], references: [id])
+  elections   Elections @relation(fields: [electionsId], references: [id], onDelete: Cascade)
   votes       Votes[]
 
   @@map("candidates")

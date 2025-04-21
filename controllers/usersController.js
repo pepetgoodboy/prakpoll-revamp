@@ -5,6 +5,72 @@ import { cookies } from "next/headers";
 
 const isProduction = process.env.MODE === "production";
 
+// Create User (Admin Only)
+const createUser = async (body) => {
+  const { npm } = body;
+  try {
+    // Check if user already exists
+    const user = await prisma.users.findUnique({ where: { npm } });
+    if (user) {
+      return { message: "User sudah terdaftar", status: 409 };
+    }
+
+    // Create user
+    await prisma.users.create({
+      data: {
+        npm,
+      },
+    });
+    return { message: "Berhasil menambahkan user", status: 201 };
+  } catch (error) {
+    return { message: error.message, status: 500 };
+  }
+};
+
+// Delete User (Admin Only)
+const deleteUser = async (id) => {
+  try {
+    const deletedUser = await prisma.users.deleteMany({
+      where: { id },
+    });
+
+    // Check if user not found
+    if (deletedUser.count === 0) {
+      return { message: "User tidak ditemukan", status: 404 };
+    }
+
+    return { message: "Berhasil menghapus user.", status: 200 };
+  } catch (error) {
+    return { message: error.message, status: 500 };
+  }
+};
+
+// Get All User (Admin Only)
+const getAllUsers = async () => {
+  try {
+    const users = await prisma.users.findMany({
+      where: {
+        role: "User",
+      },
+      select: {
+        id: true,
+        npm: true,
+        fullname: true,
+        studyProgramOrPosition: true,
+        ukm: true,
+      },
+    });
+
+    return {
+      message: `Berhasil mengambil data ${users.length} user`,
+      status: 200,
+      data: users,
+    };
+  } catch (error) {
+    return { message: error.message, status: 500 };
+  }
+};
+
 // Create jwt token
 const createToken = (id) => {
   return jwt.sign({ id }, process.env.JWT_SECRET, {
@@ -52,28 +118,6 @@ const loginUser = async (body) => {
   }
 };
 
-// Create User (Admin Only)
-const createUser = async (body) => {
-  const { npm } = body;
-  try {
-    // Check if user already exists
-    const user = await prisma.users.findUnique({ where: { npm } });
-    if (user) {
-      return { message: "User sudah terdaftar", status: 409 };
-    }
-
-    // Create user
-    await prisma.users.create({
-      data: {
-        npm,
-      },
-    });
-    return { message: "Berhasil menambahkan user", status: 201 };
-  } catch (error) {
-    return { message: error.message, status: 500 };
-  }
-};
-
 // Register User
 const registerUser = async (body) => {
   const { npm, fullname, password, studyProgramOrPosition, ukm } = body;
@@ -113,4 +157,4 @@ const registerUser = async (body) => {
   }
 };
 
-export { loginUser, createUser, registerUser };
+export { loginUser, registerUser, createUser, deleteUser, getAllUsers };
