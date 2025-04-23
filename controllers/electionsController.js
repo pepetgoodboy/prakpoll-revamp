@@ -307,10 +307,112 @@ const getElectionResult = async (id) => {
   }
 };
 
+const getElectionResultAdmin = async (id) => {
+  try {
+    const election = await prisma.elections.findUnique({
+      where: {
+        id,
+      },
+      select: {
+        title: true,
+        type: true,
+        eligibility: true,
+        startDate: true,
+        endDate: true,
+        candidates: {
+          select: {
+            name: true,
+            voteCount: true,
+            votes: {
+              select: {
+                userId: true,
+                voteAt: true,
+                user: {
+                  select: {
+                    fullname: true,
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+    });
+
+    // Total votes
+    const totalVotes = election.candidates.reduce(
+      (total, candidate) => total + candidate.voteCount,
+      0
+    );
+
+    // Candidates
+    const candidates = election.candidates.map((candidate) => ({
+      name: candidate.name,
+      voteCount: candidate.voteCount,
+      percentage: ((candidate.voteCount / totalVotes) * 100).toFixed(2) + "%",
+      votes: candidate.votes.map((vote) => ({
+        userId: vote.userId,
+        fullname: vote.user?.fullname ?? "-",
+        voteAt: vote.voteAt,
+      })),
+    }));
+
+    // Total Voters
+    let totalVoters = 0;
+    if (election.type === "UKM") {
+      totalVoters = await prisma.users.count({
+        where: {
+          ukm: election.eligibility,
+          role: "User",
+        },
+      });
+    } else if (election.type === "Himpunan") {
+      totalVoters = await prisma.users.count({
+        where: {
+          studyProgramOrPosition: election.eligibility,
+          role: "User",
+        },
+      });
+    } else {
+      totalVoters = await prisma.users.count({
+        where: {
+          role: "User",
+        },
+      });
+    }
+
+    // Participation Rate
+    const participationRate =
+      ((totalVotes / totalVoters) * 100).toFixed(2) + "%";
+
+    // Result
+    const result = {
+      title: election.title,
+      type: election.type,
+      eligibility: election.eligibility,
+      startDate: election.startDate,
+      endDate: election.endDate,
+      totalVotes,
+      totalVoters,
+      participationRate,
+      candidates,
+    };
+
+    return {
+      message: "Berhasil mengambil data pemilihan",
+      data: result,
+      status: 200,
+    };
+  } catch (error) {
+    return { message: error.message, status: 500 };
+  }
+};
+
 export {
   getAllElections,
   getElectionsByStudyProgramOrUKM,
   createElection,
   deleteElection,
   getElectionResult,
+  getElectionResultAdmin,
 };
