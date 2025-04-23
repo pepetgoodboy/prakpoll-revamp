@@ -18,7 +18,7 @@ export const authMiddleware = (handler) => {
 
       const user = await prisma.users.findUnique({
         where: { id: decoded.id },
-        select: { id: true },
+        select: { id: true, studyProgramOrPosition: true, ukm: true },
       });
 
       if (!user) {

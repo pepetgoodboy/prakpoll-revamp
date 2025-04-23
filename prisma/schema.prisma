@@ -61,8 +61,8 @@ model Votes {
   voteAt      DateTime @default(now())
 
   user      Users      @relation(fields: [userId], references: [id])
-  election  Elections  @relation(fields: [electionId], references: [id])
-  candidate Candidates @relation(fields: [candidateId], references: [id])
+  election  Elections  @relation(fields: [electionId], references: [id], onDelete: Cascade)
+  candidate Candidates @relation(fields: [candidateId], references: [id], onDelete: Cascade)
 
   @@unique([userId, electionId])
   @@map("votes")
