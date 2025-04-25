@@ -1,8 +1,12 @@
 import { NextResponse } from "next/server";
 import { checkAuth } from "@/controllers/usersController";
+import { cookies } from "next/headers";
 
 export async function GET() {
-  const result = await checkAuth();
+  const cookieStore = cookies();
+  const token = cookieStore.get("token");
+
+  const result = await checkAuth(token?.value);
 
   if ("error" in result) {
     return NextResponse.json(

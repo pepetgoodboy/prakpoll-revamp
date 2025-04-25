@@ -173,17 +173,14 @@ const logoutUser = async () => {
 };
 
 // Check Auth
-const checkAuth = async () => {
-  const cookieStore = await cookies();
+const checkAuth = async (tokenValue) => {
   try {
-    const token = cookieStore.get("token");
-
-    if (!token) {
+    if (!tokenValue) {
       return { message: "Anda belum login", status: 401 };
     }
 
     // Verify Token
-    const decoded = jwt.verify(token.value, process.env.JWT_SECRET);
+    const decoded = jwt.verify(tokenValue, process.env.JWT_SECRET);
     const user = await prisma.users.findFirst({
       where: { id: decoded.id },
       select: { id: true, npm: true, fullname: true, role: true },
