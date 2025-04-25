@@ -24,7 +24,7 @@ const getElectionsByStudyProgramOrUKM = async (studyProgramOrPosition, ukm) => {
   try {
     // Check if ukm is null & studyProgramOrPosition is Dosen, Akademik, or Staff
     if (
-      ukm === null &&
+      ukm === "Tidak_Ada" &&
       (studyProgramOrPosition === "Dosen" ||
         studyProgramOrPosition === "Akademik" ||
         studyProgramOrPosition === "Staff")
@@ -42,7 +42,7 @@ const getElectionsByStudyProgramOrUKM = async (studyProgramOrPosition, ukm) => {
     }
 
     // Check if ukm is null
-    if (ukm === null) {
+    if (ukm === "Tidak_Ada") {
       const elections = await prisma.elections.findMany({
         where: {
           OR: [{ eligibility: studyProgramOrPosition }, { eligibility: "All" }],

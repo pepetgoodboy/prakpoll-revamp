@@ -79,6 +79,7 @@ enum StudyOrPosition {
 }
 
 enum Ukm {
+  Tidak_Ada @map("Tidak Ada")
   Bamboo
   IMSI
   Futsal

@@ -72,8 +72,8 @@ const getAllUsers = async () => {
 };
 
 // Create jwt token
-const createToken = (id) => {
-  return jwt.sign({ id }, process.env.JWT_SECRET, {
+const createToken = (id, role) => {
+  return jwt.sign({ id, role }, process.env.JWT_SECRET, {
     expiresIn: "7d",
   });
 };
@@ -105,7 +105,7 @@ const loginUser = async (body) => {
     }
 
     // Create and assign token
-    const token = createToken(user.id);
+    const token = createToken(user.id, user.role);
     cookieStore.set("token", token, cookieOptions);
 
     return {
@@ -157,4 +157,54 @@ const registerUser = async (body) => {
   }
 };
 
-export { loginUser, registerUser, createUser, deleteUser, getAllUsers };
+const logoutUser = async () => {
+  const cookieStore = await cookies();
+  try {
+    const cookie = cookieStore.get("token");
+    if (!cookie) {
+      return { message: "Anda belum login", status: 401 };
+    }
+
+    cookieStore.delete("token");
+    return { message: "Berhasil logout", status: 200 };
+  } catch (error) {
+    return { message: error.message, status: 500 };
+  }
+};
+
+// Check Auth
+const checkAuth = async () => {
+  const cookieStore = await cookies();
+  try {
+    const token = cookieStore.get("token");
+
+    if (!token) {
+      return { message: "Anda belum login", status: 401 };
+    }
+
+    // Verify Token
+    const decoded = jwt.verify(token.value, process.env.JWT_SECRET);
+    const user = await prisma.users.findFirst({
+      where: { id: decoded.id },
+      select: { id: true, npm: true, fullname: true, role: true },
+    });
+
+    if (!user) {
+      return { message: "User tidak ditemukan", status: 404 };
+    }
+
+    return { message: "Terautorisasi", status: 200, user: user };
+  } catch (error) {
+    return { message: error.message, status: 500 };
+  }
+};
+
+export {
+  loginUser,
+  registerUser,
+  createUser,
+  deleteUser,
+  getAllUsers,
+  checkAuth,
+  logoutUser,
+};
