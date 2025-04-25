@@ -5,20 +5,23 @@ import jwt from "jsonwebtoken";
 
 export async function registerAction(prevData, formData) {
   try {
-    const response = await fetch("http://localhost:3000/api/users/register", {
-      method: "PATCH",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      credentials: "include",
-      body: JSON.stringify({
-        npm: formData.get("npm"),
-        fullname: formData.get("fullname"),
-        password: formData.get("password"),
-        studyProgramOrPosition: formData.get("studyProgramOrPosition"),
-        ukm: formData.get("ukm"),
-      }),
-    });
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_URL}/api/users/register`,
+      {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+        body: JSON.stringify({
+          npm: formData.get("npm"),
+          fullname: formData.get("fullname"),
+          password: formData.get("password"),
+          studyProgramOrPosition: formData.get("studyProgramOrPosition"),
+          ukm: formData.get("ukm"),
+        }),
+      }
+    );
 
     const data = await response.json();
 
@@ -35,17 +38,20 @@ export async function registerAction(prevData, formData) {
 
 export async function loginAction(prevState, formData) {
   try {
-    const response = await fetch("http://localhost:3000/api/users/login", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      credentials: "include",
-      body: JSON.stringify({
-        npm: formData.get("npm"),
-        password: formData.get("password"),
-      }),
-    });
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_URL}/api/users/login`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+        body: JSON.stringify({
+          npm: formData.get("npm"),
+          password: formData.get("password"),
+        }),
+      }
+    );
 
     const data = await response.json();
 
