@@ -3,7 +3,7 @@ import { checkAuth } from "@/controllers/usersController";
 import { cookies } from "next/headers";
 
 export async function GET() {
-  const cookieStore = cookies();
+  const cookieStore = await cookies();
   const token = cookieStore.get("token");
 
   const result = await checkAuth(token?.value);
