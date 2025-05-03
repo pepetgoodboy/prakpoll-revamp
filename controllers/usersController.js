@@ -1,5 +1,6 @@
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
+import crypto from "crypto";
 import { prisma } from "@/lib/prisma";
 import { cookies } from "next/headers";
 
@@ -7,7 +8,7 @@ const isProduction = process.env.MODE === "production";
 
 // Create User (Admin Only)
 const createUser = async (body) => {
-  const { npm } = body;
+  const { npm, fullname, studyProgramOrPosition } = body;
   try {
     // Check if user already exists
     const user = await prisma.users.findUnique({ where: { npm } });
@@ -15,10 +16,15 @@ const createUser = async (body) => {
       return { message: "User sudah terdaftar", status: 409 };
     }
 
+    const verifCode = crypto.randomBytes(3).toString("hex");
+
     // Create user
     await prisma.users.create({
       data: {
         npm,
+        fullname,
+        studyProgramOrPosition,
+        verifCode,
       },
     });
     return { message: "Berhasil menambahkan user", status: 201 };
@@ -120,7 +126,7 @@ const loginUser = async (body) => {
 
 // Register User
 const registerUser = async (body) => {
-  const { npm, fullname, password, studyProgramOrPosition, ukm } = body;
+  const { npm, password, verifCode } = body;
   try {
     // Check if user already exists
     const user = await prisma.users.findUnique({ where: { npm } });
@@ -136,6 +142,11 @@ const registerUser = async (body) => {
       return { message: "Password minimal 8 karakter", status: 400 };
     }
 
+    // Check Verif COde
+    if (user.verifCode !== verifCode) {
+      return { message: "Kode verifikasi salah", status: 400 };
+    }
+
     // Hash password
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
@@ -144,10 +155,7 @@ const registerUser = async (body) => {
     await prisma.users.update({
       where: { npm },
       data: {
-        fullname,
         password: hashedPassword,
-        studyProgramOrPosition,
-        ukm,
       },
     });
 
@@ -196,6 +204,39 @@ const checkAuth = async (tokenValue) => {
   }
 };
 
+// Refresh Verif Code
+const refreshCode = async () => {
+  try {
+    const users = await prisma.users.findMany({
+      where: {
+        password: {
+          isSet: false,
+        },
+      },
+      select: {
+        id: true,
+        npm: true,
+        verifCode: true,
+      },
+    });
+
+    for (const user of users) {
+      const verifCode = crypto.randomBytes(3).toString("hex");
+      await prisma.users.update({
+        where: { id: user.id },
+        data: { verifCode },
+      });
+      console.log(
+        "Update verif code npm " + user.npm + " menjadi " + verifCode
+      );
+    }
+
+    return { message: "Berhasil refresh verif code", status: 200 };
+  } catch (error) {
+    return { message: error.message, status: 500 };
+  }
+};
+
 export {
   loginUser,
   registerUser,
@@ -204,4 +245,5 @@ export {
   getAllUsers,
   checkAuth,
   logoutUser,
+  refreshCode,
 };

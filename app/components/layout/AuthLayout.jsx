@@ -28,12 +28,7 @@ export default function AuthLayout({
               Selamat Datang 👋
             </h2>
             <p className="lg:text-lg 2xl:text-xl">
-              <span
-                data-testid="auth-title"
-                className="font-semibold text-secondary"
-              >
-                {title}
-              </span>{" "}
+              <span className="font-semibold text-secondary">{title}</span>{" "}
               untuk melakukan pemilihan ketua organisasi mahasiswa{" "}
               <span className="font-semibold">
                 Politeknik Praktisi Bandung.

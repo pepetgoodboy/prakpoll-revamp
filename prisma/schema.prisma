@@ -8,15 +8,16 @@ datasource db {
 }
 
 model Users {
-  id                     String           @id @default(auto()) @map("_id") @db.ObjectId
-  npm                    String           @unique
-  fullname               String?
+  id                     String          @id @default(auto()) @map("_id") @db.ObjectId
+  npm                    String          @unique
+  fullname               String
   password               String?
-  studyProgramOrPosition StudyOrPosition?
+  verifCode              String?
+  studyProgramOrPosition StudyOrPosition
   ukm                    Ukm?
-  role                   Role             @default(User)
-  createdAt              DateTime         @default(now())
-  updatedAt              DateTime         @default(now())
+  role                   Role            @default(User)
+  createdAt              DateTime        @default(now())
+  updatedAt              DateTime        @default(now())
   votes                  Votes[]
 
   @@map("users")
