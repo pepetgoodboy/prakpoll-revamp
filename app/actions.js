@@ -15,10 +15,8 @@ export async function registerAction(prevData, formData) {
         credentials: "include",
         body: JSON.stringify({
           npm: formData.get("npm"),
-          fullname: formData.get("fullname"),
           password: formData.get("password"),
-          studyProgramOrPosition: formData.get("studyProgramOrPosition"),
-          ukm: formData.get("ukm"),
+          verifCode: formData.get("verifCode"),
         }),
       }
     );

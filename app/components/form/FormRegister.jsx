@@ -7,7 +7,6 @@ import { registerAction } from "@/app/actions";
 import { useActionState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Spinner from "@/app/components/spinner/Spinner";
-import SelectAuth from "../select/SelectAuth";
 import { toast } from "react-toastify";
 
 const initialState = {
@@ -54,64 +53,29 @@ export default function FormRegister() {
       action={formAction}
       className="flex flex-col gap-4 lg:gap-6 2xl:gap-8"
     >
-      <div className="lg:flex lg:gap-2">
-        <div className="flex flex-col gap-2">
-          <LabelAuth htmlFor="npm" text="NPM / ID Pemilih" />
-          <InputAuth id="npm" name="npm" type="text" placeholder="0225001" />
-        </div>
-        <div className="flex flex-col gap-2">
-          <LabelAuth htmlFor="fullname" text="Nama Lengkap" />
-          <InputAuth
-            id="fullname"
-            name="fullname"
-            type="text"
-            placeholder="Ucok Racing"
-          />
-        </div>
-      </div>
-      <div className="lg:flex lg:gap-2">
-        <div className="flex flex-col gap-2">
-          <LabelAuth htmlFor="studyProgramOrPosition" text="Prodi / Jabatan" />
-          <SelectAuth id="studyProgramOrPosition" name="studyProgramOrPosition">
-            <option value="" disabled>
-              Pilih Prodi / Jabatan
-            </option>
-            <option value="Akuntansi">Akuntansi</option>
-            <option value="Perpajakan">Perpajakan</option>
-            <option value="Manajemen_Informatika">Manajemen Informatika</option>
-            <option value="Manajemen_Bisnis_Digital">
-              Manajemen Bisnis Digital
-            </option>
-            <option value="Dosen">Dosen</option>
-            <option value="Staff">Staff</option>
-            <option value="Akademik">Akademik</option>
-          </SelectAuth>
-        </div>
-        <div className="flex flex-col gap-2">
-          <LabelAuth htmlFor="ukm" text="UKM" />
-          <SelectAuth id="ukm" name="ukm">
-            <option value="" disabled>
-              Pilih UKM
-            </option>
-            <option value="Tidak_Ada">Tidak Ada</option>
-            <option value="IMSI">IMSI</option>
-            <option value="Bamboo">Bamboo</option>
-            <option value="Futsal">Futsal</option>
-            <option value="Badminton">Badminton</option>
-          </SelectAuth>
-        </div>
+      <div className="flex flex-col gap-2">
+        <LabelAuth htmlFor="npm" text="NPM / ID Pemilih" />
+        <InputAuth id="npm" name="npm" type="text" placeholder="0225001" />
       </div>
       <div className="flex flex-col gap-2">
-        <LabelAuth htmlFor="password" text="Password" />
+        <LabelAuth htmlFor="password" text="Minimal 8 karakter" />
         <InputAuth
           id="password"
           name="password"
           type="password"
-          placeholder="Minimal 8 karakter"
+          placeholder="Ucok Racing"
+        />
+      </div>
+      <div className="flex flex-col gap-2">
+        <LabelAuth htmlFor="verifCode" text="Kode Verifikasi" />
+        <InputAuth
+          id="verifCode"
+          name="verifCode"
+          type="text"
+          placeholder="a9jd71"
         />
       </div>
       <ButtonAuth disabled={pending} text={pending ? <Spinner /> : "Daftar"} />
-      {/* <ButtonAuth text="Daftar" /> */}
     </form>
   );
 }
