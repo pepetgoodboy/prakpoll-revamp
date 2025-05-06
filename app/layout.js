@@ -1,5 +1,5 @@
 import { Figtree } from "next/font/google";
-import "./globals.css";
+import "@/styles/globals.css";
 import { ToastContainer } from "react-toastify";
 
 const figtree = Figtree({

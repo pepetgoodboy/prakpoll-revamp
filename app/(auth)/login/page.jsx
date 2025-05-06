@@ -1,5 +1,5 @@
-import FormLogin from "@/app/components/form/FormLogin";
-import AuthLayout from "@/app/components/layout/AuthLayout";
+import FormLogin from "@/components/ui/Form/FormLogin";
+import AuthLayout from "@/components/layout/AuthLayout";
 
 export const metadata = {
   title: "PrakPoll | Masuk",

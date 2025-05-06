@@ -1,22 +1,22 @@
 "use client";
 
-import LabelAuth from "@/app/components/label/LabelAuth";
-import InputAuth from "@/app/components/input/InputAuth";
-import ButtonAuth from "@/app/components/button/ButtonAuth";
-import { loginAction } from "@/app/actions";
+import LabelAuth from "@/components/ui/Label/LabelAuth";
+import InputAuth from "@/components/ui/Input/InputAuth";
+import ButtonAuth from "@/components/ui/Button/ButtonAuth";
+import { registerAction } from "@/app/actions";
 import { useActionState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import Spinner from "@/app/components/spinner/Spinner";
+import Spinner from "@/components/ui/Spinner/Spinner";
 import { toast } from "react-toastify";
 
 const initialState = {
   message: "",
 };
 
-export default function FormLogin() {
+export default function FormRegister() {
   const router = useRouter();
   const [state, formAction, pending] = useActionState(
-    loginAction,
+    registerAction,
     initialState
   );
 
@@ -24,7 +24,7 @@ export default function FormLogin() {
     if (!state) return;
 
     if (state.success) {
-      toast.success(state.message || "Berhasil login!", {
+      toast.success(state.message || "Registrasi berhasil!", {
         theme: "light",
         autoClose: 1000,
       });
@@ -33,13 +33,13 @@ export default function FormLogin() {
         if (state.redirectTo) {
           router.push(state.redirectTo);
         }
-      }, 300);
+      }, 1000);
 
       return () => clearTimeout(timer);
     }
 
     if (!state.success && state.message) {
-      toast.error(state.message || "Login gagal!", {
+      toast.error(state.message || "Registrasi gagal!", {
         theme: "light",
         autoClose: 1000,
       });
@@ -48,8 +48,8 @@ export default function FormLogin() {
 
   return (
     <form
-      id="loginForm"
-      name="loginForm"
+      id="registerForm"
+      name="registerForm"
       action={formAction}
       className="flex flex-col gap-4 lg:gap-6 2xl:gap-8"
     >
@@ -58,16 +58,24 @@ export default function FormLogin() {
         <InputAuth id="npm" name="npm" type="text" placeholder="0225001" />
       </div>
       <div className="flex flex-col gap-2">
-        <LabelAuth htmlFor="password" text="Password" />
+        <LabelAuth htmlFor="password" text="Minimal 8 karakter" />
         <InputAuth
           id="password"
           name="password"
           type="password"
-          placeholder="Minimal 8 karakter"
+          placeholder="Ucok Racing"
         />
-        <p></p>
       </div>
-      <ButtonAuth disabled={pending} text={pending ? <Spinner /> : "Masuk"} />
+      <div className="flex flex-col gap-2">
+        <LabelAuth htmlFor="verifCode" text="Kode Verifikasi" />
+        <InputAuth
+          id="verifCode"
+          name="verifCode"
+          type="text"
+          placeholder="a9jd71"
+        />
+      </div>
+      <ButtonAuth disabled={pending} text={pending ? <Spinner /> : "Daftar"} />
     </form>
   );
 }

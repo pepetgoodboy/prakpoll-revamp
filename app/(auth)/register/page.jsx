@@ -1,5 +1,5 @@
-import FormRegister from "@/app/components/form/FormRegister";
-import AuthLayout from "@/app/components/layout/AuthLayout";
+import FormRegister from "@/components/ui/Form/FormRegister";
+import AuthLayout from "@/components/layout/AuthLayout";
 
 export const metadata = {
   title: "PrakPoll | Daftar",
