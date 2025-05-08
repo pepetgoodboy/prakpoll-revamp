@@ -48,7 +48,7 @@ export default function Navbar() {
                   />
                 </div>
               </div>
-              <NavLinkMobile />
+              <NavLinkMobile toggleMenu={toggleMenu} />
               <div className="flex flex-col gap-2">
                 <ButtonNavbar variant="py-2 w-full" />
               </div>

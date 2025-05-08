@@ -3,7 +3,7 @@ import ButtonHero from "../ui/Button/ButtonHero";
 
 export default function HeroSection() {
   return (
-    <section className="relative mt-8">
+    <section id="beranda" className="relative mt-8">
       <div className="max-w-7xl px-4 lg:px-8 mx-auto">
         <div className="relative">
           <Image

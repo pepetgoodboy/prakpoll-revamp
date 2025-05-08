@@ -1,6 +1,6 @@
 import Image from "next/image";
 
-export default function NavbarLogo() {
+export default function NavbarLogo({ variant = "text-gray-900" }) {
   return (
     <div className="flex items-center">
       <Image
@@ -10,7 +10,7 @@ export default function NavbarLogo() {
         width={32}
         height={32}
       />
-      <span className="font-bold text-gray-900 text-3xl">PrakPoll</span>
+      <span className={`font-bold ${variant} text-3xl`}>PrakPoll</span>
     </div>
   );
 }
