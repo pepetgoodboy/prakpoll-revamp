@@ -2,6 +2,7 @@
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import jwt from "jsonwebtoken";
+import { revalidatePath } from "next/cache";
 
 export async function registerAction(prevData, formData) {
   try {
@@ -84,4 +85,75 @@ export async function logoutAction() {
   cookieStore.delete("token");
 
   redirect("/login");
+}
+
+export async function addUserAction(prevData, formData) {
+  const cookieStore = await cookies();
+  const token = cookieStore.get("token");
+
+  if (!token) {
+    return null;
+  }
+
+  try {
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_URL}/api/users/create`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Cookie: `token=${token.value}`,
+        },
+        body: JSON.stringify({
+          npm: formData.get("npm"),
+          fullname: formData.get("fullname"),
+          studyProgramOrPosition: formData.get("studyProgramOrPosition"),
+        }),
+      }
+    );
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      return { message: data.message };
+    }
+    return { success: true, message: data.message };
+  } catch (error) {
+    console.error("Error adding user:", error.message);
+    return { success: false, message: error.message };
+  }
+}
+
+export async function deleteUserAction(prevData, formData) {
+  const cookieStore = await cookies();
+  const token = cookieStore.get("token");
+
+  if (!token) {
+    return null;
+  }
+
+  const userId = formData.get("id");
+
+  try {
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_URL}/api/users/delete/${userId}`,
+      {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+          Cookie: `token=${token.value}`,
+        },
+      }
+    );
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      return { message: data.message };
+    }
+    return { success: true, message: data.message };
+  } catch (error) {
+    console.error("Error deleting user:", error.message);
+    return { success: false, message: error.message };
+  }
 }

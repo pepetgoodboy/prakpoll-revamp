@@ -64,6 +64,7 @@ const getAllUsers = async () => {
         fullname: true,
         studyProgramOrPosition: true,
         ukm: true,
+        verifCode: true,
       },
     });
 
@@ -191,7 +192,14 @@ const checkAuth = async (tokenValue) => {
     const decoded = jwt.verify(tokenValue, process.env.JWT_SECRET);
     const user = await prisma.users.findFirst({
       where: { id: decoded.id },
-      select: { id: true, npm: true, fullname: true, role: true },
+      select: {
+        id: true,
+        npm: true,
+        fullname: true,
+        role: true,
+        studyProgramOrPosition: true,
+        ukm: true,
+      },
     });
 
     if (!user) {

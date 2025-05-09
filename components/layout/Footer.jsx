@@ -96,7 +96,7 @@ export default function Footer() {
 
         <div className="border-t border-indigo-800 mt-12 pt-8">
           <p className="text-center text-gray-400 text-sm">
-            &copy; {currentYear} PrakPoll. Semua hak cipta dilindungi.
+            &copy; {currentYear} PrakPoll. Dibuat sepenuh ♥ oleh PepetGoodboy.
           </p>
         </div>
       </div>
