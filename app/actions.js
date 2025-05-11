@@ -87,6 +87,30 @@ export async function logoutAction() {
   redirect("/login");
 }
 
+export async function getAllUsersAction() {
+  const cookieStore = await cookies();
+  const token = cookieStore.get("token");
+
+  if (!token) {
+    return null;
+  }
+
+  try {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_URL}/api/users`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Cookie: `token=${token.value}`,
+      },
+      credentials: "include",
+    });
+    const result = await response.json();
+    return result.data;
+  } catch (err) {
+    console.log(err);
+  }
+}
+
 export async function addUserAction(prevData, formData) {
   const cookieStore = await cookies();
   const token = cookieStore.get("token");
@@ -117,6 +141,8 @@ export async function addUserAction(prevData, formData) {
     if (!response.ok) {
       return { message: data.message };
     }
+
+    revalidatePath("/dashboard/admin/users");
     return { success: true, message: data.message };
   } catch (error) {
     console.error("Error adding user:", error.message);
@@ -151,9 +177,149 @@ export async function deleteUserAction(prevData, formData) {
     if (!response.ok) {
       return { message: data.message };
     }
+    revalidatePath("/dashboard/admin/users");
     return { success: true, message: data.message };
   } catch (error) {
     console.error("Error deleting user:", error.message);
     return { success: false, message: error.message };
+  }
+}
+
+export async function getAllElectionsAction() {
+  const cookieStore = await cookies();
+  const token = cookieStore.get("token");
+
+  if (!token) {
+    return null;
+  }
+
+  try {
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_URL}/api/elections`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Cookie: `token=${token.value}`,
+        },
+        credentials: "include",
+      }
+    );
+    const result = await response.json();
+    return result.data;
+  } catch (err) {
+    console.log(err);
+  }
+}
+
+export async function deleteElectionAction(prevState, formData) {
+  const cookieStore = await cookies();
+  const token = cookieStore.get("token");
+
+  if (!token) {
+    return null;
+  }
+
+  const electionId = formData.get("id");
+
+  try {
+    const response = await fetch(
+      `
+      ${process.env.NEXT_PUBLIC_URL}/api/elections/delete/${electionId}`,
+      {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+          Cookie: `token=${token.value}`,
+        },
+      }
+    );
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      return { message: data.message };
+    }
+
+    revalidatePath("/dashboard/admin/pemilihan");
+
+    return { success: true, message: data.message };
+  } catch (error) {
+    console.error("Error deleting user:", error.message);
+    return { success: false, message: error.message };
+  }
+}
+
+export async function createElectionAction(prevData, formData) {
+  try {
+    const title = formData.get("title");
+    const type = formData.get("type");
+    const eligibility = formData.get("eligibility");
+    const startDate = formData.get("startDate");
+    const endDate = formData.get("endDate");
+
+    const formattedStartDate = startDate.replace("T", " ");
+    const formattedEndDate = endDate.replace("T", " ");
+
+    const candidates = [];
+    let index = 0;
+    while (formData.has(`candidates[${index}][name]`)) {
+      const candidate = {
+        name: formData.get(`candidates[${index}][name]`),
+        vision: formData.get(`candidates[${index}][vision]`),
+        mission: formData.get(`candidates[${index}][mission]`),
+      };
+      candidates.push(candidate);
+      index++;
+    }
+
+    const cookieStore = await cookies();
+    const token = cookieStore.get("token");
+
+    if (!token) {
+      return null;
+    }
+
+    const requestBody = new FormData();
+    requestBody.append("title", title);
+    requestBody.append("type", type);
+    requestBody.append("eligibility", eligibility);
+    requestBody.append("startDate", formattedStartDate);
+    requestBody.append("endDate", formattedEndDate);
+    requestBody.append("candidates", JSON.stringify(candidates));
+
+    for (let i = 0; i < candidates.length; i++) {
+      const image = formData.get(`candidateImage${i + 1}`);
+      if (image) {
+        requestBody.append(`candidateImage${i + 1}`, image);
+      }
+    }
+
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_URL}/api/elections/create`,
+      {
+        method: "POST",
+        headers: {
+          Cookie: `token=${token.value}`,
+        },
+        credentials: "include",
+        body: requestBody,
+      }
+    );
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      return { message: data.message };
+    }
+
+    revalidatePath("/dashboard/admin/pemilihan");
+    return {
+      success: true,
+      message: data.message,
+    };
+  } catch (error) {
+    console.error("Error di Server Action:", error);
+    return { success: false, message: "Gagal menambahkan pemilihan." };
   }
 }

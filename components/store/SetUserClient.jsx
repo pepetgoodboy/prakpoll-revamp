@@ -1,10 +1,10 @@
 "use client";
 
 import { useEffect } from "react";
-import { userStore } from "@/store/userStore";
+import { useUserStore } from "@/store/userStore";
 
 export default function SetUserClient({ user }) {
-  const setUser = userStore((state) => state.setUser);
+  const setUser = useUserStore((state) => state.setUser);
 
   useEffect(() => {
     setUser(user);

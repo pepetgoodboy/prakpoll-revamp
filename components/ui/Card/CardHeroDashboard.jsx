@@ -1,10 +1,10 @@
 "use client";
 
-import { userStore } from "@/store/userStore";
+import { useUserStore } from "@/store/userStore";
 import Image from "next/image";
 
 export default function CardHeroDashboard() {
-  const user = userStore((state) => state.user);
+  const user = useUserStore((state) => state.user);
   return (
     <div className="relative">
       <Image

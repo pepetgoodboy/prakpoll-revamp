@@ -4,7 +4,7 @@ import { MdOutlineHowToVote } from "react-icons/md";
 import { GiVote } from "react-icons/gi";
 import { LuUsersRound } from "react-icons/lu";
 import { PiUsersFourLight } from "react-icons/pi";
-import { userStore } from "@/store/userStore";
+import { useUserStore } from "@/store/userStore";
 
 export default function CardSummaryDashboard({
   totalElectionsActive,
@@ -13,7 +13,7 @@ export default function CardSummaryDashboard({
   totalElectionsFinished = 0,
   totalUsers = 0,
 }) {
-  const user = userStore((state) => state.user);
+  const user = useUserStore((state) => state.user);
 
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">

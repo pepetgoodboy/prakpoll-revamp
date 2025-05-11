@@ -5,12 +5,15 @@ import { addUserAction } from "@/app/actions";
 import { useActionState, useEffect } from "react";
 import { toast } from "react-toastify";
 import Spinner from "@/components/ui/Spinner/Spinner";
+import { useUserStore } from "@/store/userStore";
 
 const initialState = {
   message: "",
 };
 
-export default function ModalAddUser({ toggleModalAddUser, fetchUsers }) {
+export default function ModalAddUser() {
+  const { toggleModalAddUser, refreshUsers } = useUserStore();
+
   const [state, formAction, pending] = useActionState(
     addUserAction,
     initialState
@@ -24,7 +27,7 @@ export default function ModalAddUser({ toggleModalAddUser, fetchUsers }) {
         theme: "light",
         autoClose: 1000,
       });
-      fetchUsers();
+      refreshUsers();
       toggleModalAddUser();
     }
 

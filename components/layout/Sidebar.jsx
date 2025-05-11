@@ -2,7 +2,7 @@
 
 import NavbarLogo from "../ui/Logo/NavbarLogo";
 import { usePathname } from "next/navigation";
-import { userStore } from "@/store/userStore";
+import { useUserStore } from "@/store/userStore";
 import { RiMenu3Line } from "react-icons/ri";
 import { IoMdClose } from "react-icons/io";
 import { useState } from "react";
@@ -10,7 +10,7 @@ import SidebarLink from "../ui/Link/SidebarLink";
 
 export default function Sidebar() {
   const pathname = usePathname();
-  const user = userStore((state) => state.user);
+  const user = useUserStore((state) => state.user);
   const [isOpen, setIsOpen] = useState(false);
   const toggleMenu = () => setIsOpen(!isOpen);
 
