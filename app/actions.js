@@ -106,8 +106,8 @@ export async function getAllUsersAction() {
     });
     const result = await response.json();
     return result.data;
-  } catch (err) {
-    console.log(err);
+  } catch (error) {
+    console.error("Error get all users:", error.message);
   }
 }
 
@@ -146,7 +146,6 @@ export async function addUserAction(prevData, formData) {
     return { success: true, message: data.message };
   } catch (error) {
     console.error("Error adding user:", error.message);
-    return { success: false, message: error.message };
   }
 }
 
@@ -181,7 +180,6 @@ export async function deleteUserAction(prevData, formData) {
     return { success: true, message: data.message };
   } catch (error) {
     console.error("Error deleting user:", error.message);
-    return { success: false, message: error.message };
   }
 }
 
@@ -206,9 +204,14 @@ export async function getAllElectionsAction() {
       }
     );
     const result = await response.json();
+
+    if (!response.ok) {
+      return { message: result.message };
+    }
+
     return result.data;
-  } catch (err) {
-    console.log(err);
+  } catch (error) {
+    console.error("Error get all election:", error.message);
   }
 }
 
@@ -245,8 +248,7 @@ export async function deleteElectionAction(prevState, formData) {
 
     return { success: true, message: data.message };
   } catch (error) {
-    console.error("Error deleting user:", error.message);
-    return { success: false, message: error.message };
+    console.error("Error deleting election:", error.message);
   }
 }
 
@@ -319,7 +321,38 @@ export async function createElectionAction(prevData, formData) {
       message: data.message,
     };
   } catch (error) {
-    console.error("Error di Server Action:", error);
-    return { success: false, message: "Gagal menambahkan pemilihan." };
+    console.error("Error add election:", error.message);
+  }
+}
+
+export async function getElectionResultAdmin(idElection) {
+  const cookieStore = await cookies();
+  const token = cookieStore.get("token");
+
+  if (!token) {
+    return null;
+  }
+
+  try {
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_URL}/api/elections/result-admin/${idElection}`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Cookie: `token=${token.value}`,
+        },
+        credentials: "include",
+      }
+    );
+
+    const result = await response.json();
+
+    if (!response.ok) {
+      return { message: result.message };
+    }
+    return result.data;
+  } catch (error) {
+    console.error("Error get election:", error.message);
   }
 }

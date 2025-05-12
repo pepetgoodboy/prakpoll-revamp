@@ -109,7 +109,7 @@ export default function CardElectionAdmin({ election, formAction }) {
             </button>
           </form>
           <ButtonHero
-            href="#"
+            href={`/dashboard/admin/pemilihan/${election.id}`}
             text="Lihat Hasil"
             variant="secondary"
             textColor="white"

@@ -1,6 +1,11 @@
 import { FaRegTrashCan } from "react-icons/fa6";
 
 export default function TableRowUsers({ user, formAction }) {
+  const studyProgramOrPositionMap = {
+    Manajemen_Informatika: "Manajemen Informatika",
+    Manajemen_Bisnis_Digital: "Manajemen Bisnis Digital",
+  };
+
   return (
     <tr className="hover:bg-gray-50">
       <td className="px-4 py-3 text-sm text-gray-900 whitespace-nowrap">
@@ -10,7 +15,8 @@ export default function TableRowUsers({ user, formAction }) {
         {user.fullname}
       </td>
       <td className="px-4 py-3 text-sm text-gray-900 whitespace-nowrap">
-        {user.studyProgramOrPosition}
+        {studyProgramOrPositionMap[user.studyProgramOrPosition] ||
+          user.studyProgramOrPosition}
       </td>
       <td className="px-4 py-3 text-sm text-gray-900 whitespace-nowrap">
         {user.ukm === "Tidak_Ada" ? "-" : user.ukm}
