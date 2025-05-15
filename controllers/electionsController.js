@@ -329,6 +329,7 @@ const getElectionResultAdmin = async (id) => {
                 voteAt: true,
                 user: {
                   select: {
+                    npm: true,
                     fullname: true,
                   },
                 },
@@ -385,6 +386,30 @@ const getElectionResultAdmin = async (id) => {
     const participationRate =
       ((totalVotes / totalVoters) * 100).toFixed(2) + "%";
 
+    // Users not voted with eligibility filter
+    let whereClause = {
+      role: "User",
+      votes: {
+        none: {
+          electionId: id,
+        },
+      },
+    };
+
+    if (election.type === "UKM") {
+      whereClause.ukm = election.eligibility;
+    } else if (election.type === "Himpunan") {
+      whereClause.studyProgramOrPosition = election.eligibility;
+    }
+
+    const usersNotVoted = await prisma.users.findMany({
+      where: whereClause,
+      select: {
+        npm: true,
+        fullname: true,
+      },
+    });
+
     // Result
     const result = {
       title: election.title,
@@ -396,6 +421,7 @@ const getElectionResultAdmin = async (id) => {
       totalVoters,
       participationRate,
       candidates,
+      usersNotVoted,
     };
 
     return {

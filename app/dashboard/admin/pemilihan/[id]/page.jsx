@@ -1,7 +1,5 @@
 import { getElectionResultAdmin } from "@/app/actions";
 import ElectionChart from "@/components/ui/Chart/ElectionChart";
-import dayjs from "dayjs";
-import "dayjs/locale/id";
 import CardSummaryElection from "@/components/ui/Card/CardSummaryElection";
 import { notFound } from "next/navigation";
 
@@ -16,10 +14,6 @@ export default async function DashboardAdminResult({ params }) {
   ) {
     notFound();
   }
-
-  const getTime = (date) => {
-    return dayjs(date).locale("id").format("DD MMMM YYYY HH.mm");
-  };
 
   const eligibilityMap = {
     Manajemen_Informatika: "Manajemen Informatika",
@@ -75,13 +69,10 @@ export default async function DashboardAdminResult({ params }) {
           Hasil Pemilihan
         </h1>
         <ElectionChart
+          id={id}
           resultElection={resultElection}
           data={data}
           options={options}
-        />
-        <CardSummaryElection
-          resultElection={resultElection}
-          getTime={getTime}
           eligibilityMap={eligibilityMap}
         />
       </div>

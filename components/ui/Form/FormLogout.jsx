@@ -1,9 +1,19 @@
+"use client";
+
 import { logoutAction } from "@/app/actions";
 import { FiLogOut } from "react-icons/fi";
+import { useElectionStore } from "@/store/electionStore";
 
 export default function FormLogout() {
+  const { cleanupPusher } = useElectionStore();
+
+  const handleSubmit = async () => {
+    cleanupPusher();
+    await logoutAction();
+  };
+
   return (
-    <form action={logoutAction}>
+    <form action={handleSubmit}>
       <button
         type="submit"
         className="flex gap-4 items-center px-6 py-3 rounded-xl hover:bg-secondary hover:text-white transition-all duration-200 ease-in text-gray-500 w-full cursor-pointer"
