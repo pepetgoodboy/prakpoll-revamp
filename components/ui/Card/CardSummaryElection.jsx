@@ -5,6 +5,7 @@ import { LuBadgeInfo } from "react-icons/lu";
 import { PiHandshake, PiUsersThree } from "react-icons/pi";
 
 export default function CardSummaryElection({
+  user,
   resultElectionData,
   eligibilityMap,
 }) {
@@ -86,7 +87,7 @@ export default function CardSummaryElection({
           </div>
         </div>
       </div>
-      {resultElectionData.usersNotVoted.length > 0 && (
+      {user.role === "Admin" && resultElectionData.usersNotVoted.length > 0 && (
         <div className="grid grid-cols-1 sm:grid-cols-2">
           <div className="flex flex-col gap-4 p-6 bg-indigo-100 rounded-[20px]">
             <div className="flex gap-2 items-center">
@@ -96,10 +97,10 @@ export default function CardSummaryElection({
               </p>
             </div>
             <div className="flex flex-col gap-1">
-              {resultElectionData.usersNotVoted.map((user, index) => (
+              {resultElectionData.usersNotVoted.map((userNotVoted, index) => (
                 <ul key={index + 1}>
                   <li className="text-gray-900 list-disc ml-4">
-                    {user.fullname} ({user.npm})
+                    {userNotVoted.fullname} ({userNotVoted.npm})
                   </li>
                 </ul>
               ))}

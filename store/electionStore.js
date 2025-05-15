@@ -53,7 +53,7 @@ export const useElectionStore = create((set, get) => ({
     }
   },
 
-  subscribeToElection: (electionId, callback) => {
+  subscribeToElection: (electionId, event, callback) => {
     const pusher = get().pusher;
     if (!pusher) return;
 
@@ -65,7 +65,7 @@ export const useElectionStore = create((set, get) => ({
       }));
     }
 
-    channel.bind("update-result-admin", callback);
+    channel.bind(event, callback);
   },
 
   unsubscribeFromElection: (electionId) => {

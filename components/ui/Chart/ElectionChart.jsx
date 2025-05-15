@@ -5,6 +5,7 @@ import Chart from "chart.js/auto";
 import { useState, useEffect } from "react";
 import { useElectionStore } from "@/store/electionStore";
 import CardSummaryElection from "../Card/CardSummaryElection";
+import { useUserStore } from "@/store/userStore";
 
 export default function ElectionChart({
   id,
@@ -13,6 +14,7 @@ export default function ElectionChart({
   options,
   eligibilityMap,
 }) {
+  const user = useUserStore((state) => state.user);
   const [chartData, setChartData] = useState(initialData);
   const [resultElectionData, setResultElectionData] = useState(resultElection);
   const electionId = id;
@@ -23,9 +25,16 @@ export default function ElectionChart({
   useEffect(() => {
     initializePusher();
 
-    subscribeToElection(electionId, (newData) => {
+    const event =
+      user.role === "Admin" ? "update-result-admin" : "update-result-user";
+
+    subscribeToElection(electionId, event, (newData) => {
       setChartData(newData.chart);
-      setResultElectionData(newData.resultUpdatedElection);
+      const resultUpdatedElection =
+        user.role === "Admin"
+          ? newData.resultUpdatedElectionAdmin
+          : newData.resultUpdatedElectionUser;
+      setResultElectionData(resultUpdatedElection);
     });
 
     return () => {
@@ -49,6 +58,7 @@ export default function ElectionChart({
         </div>
       </div>
       <CardSummaryElection
+        user={user}
         resultElectionData={resultElectionData}
         eligibilityMap={eligibilityMap}
       />

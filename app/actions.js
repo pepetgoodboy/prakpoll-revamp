@@ -215,6 +215,70 @@ export async function getAllElectionsAction() {
   }
 }
 
+export async function getAllElectionsUserAction() {
+  const cookieStore = await cookies();
+  const token = cookieStore.get("token");
+
+  if (!token) {
+    return null;
+  }
+
+  try {
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_URL}/api/elections/list`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Cookie: `token=${token.value}`,
+        },
+        credentials: "include",
+      }
+    );
+    const result = await response.json();
+
+    if (!response.ok) {
+      return { message: result.message };
+    }
+
+    return result.data;
+  } catch (error) {
+    console.error("Error get all election:", error.message);
+  }
+}
+
+export async function getElectionByIdAction(id) {
+  const cookieStore = await cookies();
+  const token = cookieStore.get("token");
+
+  if (!token) {
+    return null;
+  }
+
+  try {
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_URL}/api/elections/${id}`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Cookie: `token=${token.value}`,
+        },
+        credentials: "include",
+      }
+    );
+    const result = await response.json();
+
+    if (!response.ok) {
+      return { message: result.message };
+    }
+
+    return result.data;
+  } catch (error) {
+    console.error("Error get election:", error.message);
+  }
+}
+
 export async function deleteElectionAction(prevState, formData) {
   const cookieStore = await cookies();
   const token = cookieStore.get("token");
@@ -354,5 +418,79 @@ export async function getElectionResultAdmin(idElection) {
     return result.data;
   } catch (error) {
     console.error("Error get election:", error.message);
+  }
+}
+
+export async function getElectionResultUser(idElection) {
+  const cookieStore = await cookies();
+  const token = cookieStore.get("token");
+
+  if (!token) {
+    return null;
+  }
+
+  try {
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_URL}/api/elections/result/${idElection}`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Cookie: `token=${token.value}`,
+        },
+        credentials: "include",
+      }
+    );
+
+    const result = await response.json();
+
+    if (!response.ok) {
+      return { message: result.message };
+    }
+    return result.data;
+  } catch (error) {
+    console.error("Error get election:", error.message);
+  }
+}
+
+export async function addVoteAction(prevData, formData) {
+  const cookieStore = await cookies();
+  const token = cookieStore.get("token");
+
+  if (!token) {
+    return null;
+  }
+
+  try {
+    const idElection = formData.get("idElection");
+    const idCandidate = formData.get("idCandidate");
+
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_URL}/api/vote/add/${idElection}/${idCandidate}`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Cookie: `token=${token.value}`,
+        },
+        credentials: "include",
+      }
+    );
+
+    const result = await response.json();
+
+    if (!response.ok) {
+      return { message: result.message };
+    }
+
+    revalidatePath("/dashboard/user/pemilihan");
+
+    return {
+      success: true,
+      message: result.message,
+      redirectTo: "/dashboard/user/pemilihan",
+    };
+  } catch (error) {
+    console.error("Error add vote:", error.message);
   }
 }

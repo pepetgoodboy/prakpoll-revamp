@@ -19,6 +19,27 @@ const getAllElections = async () => {
   }
 };
 
+// Get Elections by ID
+const getElectionsById = async (id) => {
+  try {
+    const election = await prisma.elections.findUnique({
+      where: {
+        id,
+      },
+      include: {
+        candidates: true,
+      },
+    });
+    return {
+      message: "Berhasil mengambil data pemilihan",
+      data: election,
+      status: 200,
+    };
+  } catch (error) {
+    return { message: error.message, status: 500 };
+  }
+};
+
 // Get Elections by Study Program or UKM
 const getElectionsByStudyProgramOrUKM = async (studyProgramOrPosition, ukm) => {
   try {
@@ -33,6 +54,9 @@ const getElectionsByStudyProgramOrUKM = async (studyProgramOrPosition, ukm) => {
         where: {
           eligibility: "All",
         },
+        include: {
+          candidates: true,
+        },
       });
       return {
         message: "Berhasil mengambil data pemilihan",
@@ -46,6 +70,9 @@ const getElectionsByStudyProgramOrUKM = async (studyProgramOrPosition, ukm) => {
       const elections = await prisma.elections.findMany({
         where: {
           OR: [{ eligibility: studyProgramOrPosition }, { eligibility: "All" }],
+        },
+        include: {
+          candidates: true,
         },
       });
       return {
@@ -62,6 +89,9 @@ const getElectionsByStudyProgramOrUKM = async (studyProgramOrPosition, ukm) => {
           { eligibility: ukm },
           { eligibility: "All" },
         ],
+      },
+      include: {
+        candidates: true,
       },
     });
     return {
@@ -436,6 +466,7 @@ const getElectionResultAdmin = async (id) => {
 
 export {
   getAllElections,
+  getElectionsById,
   getElectionsByStudyProgramOrUKM,
   createElection,
   deleteElection,

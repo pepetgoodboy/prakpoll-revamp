@@ -51,7 +51,7 @@ export default function ModalAddElection() {
         theme: "light",
         autoClose: 1000,
       });
-      setOpenElectionModal(false);
+      toggleModalAddElection();
       refreshElections();
     }
 

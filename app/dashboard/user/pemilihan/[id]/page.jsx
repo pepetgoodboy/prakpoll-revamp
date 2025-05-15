@@ -1,10 +1,10 @@
-import { getElectionResultAdmin } from "@/app/actions";
+import { getElectionResultUser } from "@/app/actions";
 import ElectionChart from "@/components/ui/Chart/ElectionChart";
 import { notFound } from "next/navigation";
 
-export default async function DashboardAdminResult({ params }) {
+export default async function DashboardUserResult({ params }) {
   const { id } = await params;
-  const resultElection = await getElectionResultAdmin(id);
+  const resultElection = await getElectionResultUser(id);
 
   if (
     !resultElection ||

@@ -151,7 +151,7 @@ const addVote = async (id, candidateId, userId) => {
       },
     });
 
-    const resultUpdatedElection = {
+    const resultUpdatedElectionAdmin = {
       title: updatedElection.title,
       type: updatedElection.type,
       eligibility: updatedElection.eligibility,
@@ -164,7 +164,7 @@ const addVote = async (id, candidateId, userId) => {
       usersNotVoted,
     };
 
-    const updatedData = {
+    const updatedDataAdmin = {
       chart: {
         labels: candidates.map((candidate) => candidate.name),
         datasets: [
@@ -177,14 +177,47 @@ const addVote = async (id, candidateId, userId) => {
           },
         ],
       },
-      resultUpdatedElection,
+      resultUpdatedElectionAdmin,
+    };
+
+    const resultUpdatedElectionUser = {
+      title: updatedElection.title,
+      type: updatedElection.type,
+      eligibility: updatedElection.eligibility,
+      startDate: updatedElection.startDate,
+      endDate: updatedElection.endDate,
+      totalVotes,
+      totalVoters,
+      participationRate,
+      candidates,
+    };
+
+    const updatedDataUser = {
+      chart: {
+        labels: candidates.map((candidate) => candidate.name),
+        datasets: [
+          {
+            label: "Suara",
+            data: candidates.map((candidate) => candidate.voteCount),
+            backgroundColor: "rgba(78, 71, 228, 0.6)",
+            borderColor: "rgba(78, 71, 228, 1)",
+            borderWidth: 1,
+          },
+        ],
+      },
+      resultUpdatedElectionUser,
     };
 
     try {
       await pusher.trigger(
         `election-${id}`,
         "update-result-admin",
-        updatedData
+        updatedDataAdmin
+      );
+      await pusher.trigger(
+        `election-${id}`,
+        "update-result-user",
+        updatedDataUser
       );
     } catch (error) {
       console.log(error);
