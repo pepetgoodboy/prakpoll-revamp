@@ -80,6 +80,50 @@ export async function loginAction(prevState, formData) {
   }
 }
 
+export async function editProfileUser(prevState, formData) {
+  const cookieStore = await cookies();
+  const token = cookieStore.get("token");
+
+  if (!token) {
+    return null;
+  }
+
+  try {
+    const fullname = formData.get("fullname");
+    const ukm = formData.get("ukm");
+
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_URL}/api/users/profile/edit`,
+      {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          Cookie: `token=${token.value}`,
+        },
+        credentials: "include",
+        body: JSON.stringify({
+          fullname,
+          ukm,
+        }),
+      }
+    );
+
+    const result = await response.json();
+
+    if (!response.ok) {
+      return { message: result.message };
+    }
+
+    return {
+      success: true,
+      message: result.message,
+    };
+  } catch (error) {
+    console.error("Error updating profie", error.message);
+    return { success: false, message: error.message };
+  }
+}
+
 export async function logoutAction() {
   const cookieStore = await cookies();
   cookieStore.delete("token");

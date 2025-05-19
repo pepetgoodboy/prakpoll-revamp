@@ -33,7 +33,10 @@ export default function Sidebar() {
             <div className="flex gap-8 px-2 lg:px-0">
               <NavbarLogo />
             </div>
-            <div className="flex items-center lg:hidden">
+            <div
+              className="flex items-center lg:hidden"
+              data-testid="open-menu"
+            >
               <RiMenu3Line
                 className="text-2xl text-gray-400 font-medium cursor-pointer"
                 onClick={toggleMenu}

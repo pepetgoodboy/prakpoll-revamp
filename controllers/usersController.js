@@ -24,6 +24,7 @@ const createUser = async (body) => {
         npm,
         fullname,
         studyProgramOrPosition,
+        ukm: "Tidak_Ada",
         verifCode,
       },
     });
@@ -245,6 +246,27 @@ const refreshCode = async () => {
   }
 };
 
+// Edit Profile User
+const editProfileUser = async (id, body) => {
+  const { fullname, ukm } = body;
+  try {
+    await prisma.users.update({
+      where: { id },
+      data: {
+        fullname,
+        ukm,
+      },
+    });
+
+    return {
+      message: "Profil berhasil diubah.",
+      status: 200,
+    };
+  } catch (error) {
+    return { message: error.message, status: 500 };
+  }
+};
+
 export {
   loginUser,
   registerUser,
@@ -254,4 +276,5 @@ export {
   checkAuth,
   logoutUser,
   refreshCode,
+  editProfileUser,
 };

@@ -126,21 +126,23 @@ export default function FormAddElection({
             variant="red-500"
             hoverVariant="red-600"
           />
-          <ButtonFormAdmin
-            type="submit"
-            disabled={pending}
-            variant="secondary"
-            hoverVariant="secondary/90"
-            text={
-              pending ? (
-                <div className="flex justify-center">
-                  <Spinner />
-                </div>
-              ) : (
-                "Tambah Pemilihan"
-              )
-            }
-          />
+          <div data-testid="button-add-election">
+            <ButtonFormAdmin
+              type="submit"
+              disabled={pending}
+              variant="secondary"
+              hoverVariant="secondary/90"
+              text={
+                pending ? (
+                  <div className="flex justify-center">
+                    <Spinner />
+                  </div>
+                ) : (
+                  "Tambah Pemilihan"
+                )
+              }
+            />
+          </div>
         </div>
       </div>
     </form>

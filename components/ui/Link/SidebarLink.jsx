@@ -22,40 +22,44 @@ export default function SidebarLink({ user, pathname, onClick = () => {} }) {
         <span className="text-lg">Dashboard</span>
       </Link>
       {user.role === "Admin" && (
+        <div data-testid="link-users">
+          <Link
+            href="/dashboard/admin/users"
+            onClick={onClick}
+            className={
+              `flex gap-4 items-center px-6 py-3 rounded-xl hover:bg-secondary hover:text-white transition-all duration-200 ease-in` +
+              (pathname === "/dashboard/admin/users"
+                ? " bg-secondary text-white"
+                : "bg-white text-gray-500")
+            }
+          >
+            <PiUsersFourLight className="w-7 h-7" />
+            <span className="text-lg">Users</span>
+          </Link>
+        </div>
+      )}
+      <div data-testid="link-pemilihan">
         <Link
-          href="/dashboard/admin/users"
+          href={
+            user.role === "Admin"
+              ? "/dashboard/admin/pemilihan"
+              : "/dashboard/user/pemilihan"
+          }
           onClick={onClick}
           className={
-            `flex gap-4 items-center px-6 py-3 rounded-xl hover:bg-secondary hover:text-white transition-all duration-200 ease-in` +
-            (pathname === "/dashboard/admin/users"
-              ? " bg-secondary text-white"
+            `flex gap-4 items-center px-6 py-3 rounded-xl hover:bg-secondary hover:text-white transition-all duration-200 ease-in ` +
+            ((user.role === "Admin" &&
+              pathname.startsWith("/dashboard/admin/pemilihan")) ||
+            (user.role === "User" &&
+              pathname.startsWith("/dashboard/user/pemilihan"))
+              ? "bg-secondary text-white"
               : "bg-white text-gray-500")
           }
         >
-          <PiUsersFourLight className="w-7 h-7" />
-          <span className="text-lg">Users</span>
+          <MdOutlineHowToVote className="w-7 h-7" />
+          <span className="text-lg">Pemilihan</span>
         </Link>
-      )}
-      <Link
-        href={
-          user.role === "Admin"
-            ? "/dashboard/admin/pemilihan"
-            : "/dashboard/user/pemilihan"
-        }
-        onClick={onClick}
-        className={
-          `flex gap-4 items-center px-6 py-3 rounded-xl hover:bg-secondary hover:text-white transition-all duration-200 ease-in ` +
-          ((user.role === "Admin" &&
-            pathname.startsWith("/dashboard/admin/pemilihan")) ||
-          (user.role === "User" &&
-            pathname.startsWith("/dashboard/user/pemilihan"))
-            ? "bg-secondary text-white"
-            : "bg-white text-gray-500")
-        }
-      >
-        <MdOutlineHowToVote className="w-7 h-7" />
-        <span className="text-lg">Pemilihan</span>
-      </Link>
+      </div>
       {user.role === "User" && (
         <Link
           href="/dashboard/user/profil"

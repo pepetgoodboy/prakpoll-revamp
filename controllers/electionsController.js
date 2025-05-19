@@ -152,8 +152,12 @@ const createElection = async (body) => {
       return { message: "Semua baris wajib diisi", status: 400 };
     }
 
-    if (!candidates || candidates.length === 0) {
-      return { message: "Minimal satu kandidat", status: 400 };
+    if (!candidates || candidates.length <= 1) {
+      return { message: "Minimal dua kandidat", status: 400 };
+    }
+
+    if (startDate > endDate || endDate < startDate) {
+      return { message: "Tanggal pemilihan tidak valid", status: 400 };
     }
 
     const candidatesWithImages = [...candidates];

@@ -121,6 +121,7 @@ export default function ModalAddUser() {
                   Batal
                 </button>
                 <button
+                  data-testid="button-add-user"
                   type="submit"
                   disabled={pending}
                   className="px-6 py-2 rounded-xl bg-secondary hover:bg-secondary/90 transition-all duration-200 ease-in text-white w-fit cursor-pointer"
