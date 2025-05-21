@@ -6,6 +6,8 @@ import GuideSection from "@/components/sections/GuideSection";
 import HeroSection from "@/components/sections/HeroSection";
 import TestimonialSection from "@/components/sections/TestimonialSection";
 
+export const dynamic = "force-dynamic";
+
 export default function Home() {
   return (
     <>

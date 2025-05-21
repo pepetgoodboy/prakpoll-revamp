@@ -1,6 +1,8 @@
 import { getAllElectionsUserAction } from "@/app/actions";
 import ElectionListUser from "@/components/sections/ElectionListUser";
 
+export const dynamic = "force-dynamic";
+
 async function fetchInitialElections() {
   try {
     const elections = await getAllElectionsUserAction();

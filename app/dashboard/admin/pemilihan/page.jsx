@@ -2,6 +2,8 @@ import { getAllElectionsAction } from "@/app/actions";
 import AddElectionSection from "@/components/sections/AddElectionSection";
 import ElectionList from "@/components/sections/ElectionList";
 
+export const dynamic = "force-dynamic";
+
 async function fetchInitialElections() {
   try {
     const elections = await getAllElectionsAction();

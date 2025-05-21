@@ -1,6 +1,8 @@
 import TableUsers from "@/components/ui/Table/TableUsers";
 import { getAllUsersAction } from "@/app/actions";
 
+export const dynamic = "force-dynamic";
+
 async function fetchInitialUsers() {
   try {
     const users = await getAllUsersAction();
