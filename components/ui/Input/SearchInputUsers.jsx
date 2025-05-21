@@ -5,6 +5,7 @@ export default function SearchInputUsers() {
   return (
     <input
       type="text"
+      name="search"
       placeholder="Cari user berdasarkan nama..."
       value={search}
       onChange={(e) => {

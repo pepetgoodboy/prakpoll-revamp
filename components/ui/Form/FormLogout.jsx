@@ -3,12 +3,15 @@
 import { logoutAction } from "@/app/actions";
 import { FiLogOut } from "react-icons/fi";
 import { useElectionStore } from "@/store/electionStore";
+// import { useUserStore } from "@/store/userStore";
 
 export default function FormLogout() {
   const { cleanupPusher } = useElectionStore();
+  // const setUser = useUserStore((state) => state.setUser);
 
   const handleSubmit = async () => {
     cleanupPusher();
+    // setUser(null);
     await logoutAction();
   };
 

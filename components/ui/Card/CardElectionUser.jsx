@@ -24,11 +24,14 @@ export default function CardElectionUser({ election }) {
           election.candidates.map((candidate, index) => (
             <div key={index} className="w-full relative">
               <Image
-                src={candidate.image || "/placeholder-image.jpg"}
-                alt={candidate.name || "Candidate"}
-                width={500}
-                height={500}
+                src={candidate.image}
+                alt={candidate.name}
+                priority
+                width={400}
+                height={200}
                 className="w-full h-full object-cover"
+                sizes="(max-width: 768px) 33vw, 33vw"
+                quality={60}
               />
               <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/50 to-transparent p-2">
                 <p className="text-white text-xs font-medium text-center">

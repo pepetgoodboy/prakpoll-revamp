@@ -83,7 +83,7 @@ export default function FormAddElection({
             name={`candidates[${index}][mission]`}
             type="text"
             value={candidate.mission}
-            placeholder={`Masukkan Misi Kandidat ${index + 1}`}
+            placeholder="Pisahkan dengan enter jika ada lebih dari satu misi"
             onChange={(e) => handleCandidateChange(e, index)}
           />
         </div>

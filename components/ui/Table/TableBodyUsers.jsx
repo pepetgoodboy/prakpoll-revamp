@@ -2,7 +2,7 @@ import { useUserStore } from "@/store/userStore";
 import Spinner from "../Spinner/Spinner";
 import TableRowUsers from "./TableRowUsers";
 
-export default function TableBodyUsers({ currentUsers, formAction }) {
+export default function TableBodyUsers({ currentUsers }) {
   const { loading } = useUserStore();
   return (
     <tbody className="divide-y divide-gray-200 bg-white">
@@ -16,7 +16,7 @@ export default function TableBodyUsers({ currentUsers, formAction }) {
         </tr>
       ) : currentUsers.length > 0 ? (
         currentUsers.map((user, index) => (
-          <TableRowUsers key={index} user={user} formAction={formAction} />
+          <TableRowUsers key={index} user={user} />
         ))
       ) : (
         <tr>

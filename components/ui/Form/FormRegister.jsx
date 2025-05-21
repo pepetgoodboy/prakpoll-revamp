@@ -57,24 +57,27 @@ export default function FormRegister() {
         <LabelAuth htmlFor="npm" text="NPM / ID Pemilih" />
         <InputAuth id="npm" name="npm" type="text" placeholder="0225001" />
       </div>
-      <div className="flex flex-col gap-2">
-        <LabelAuth htmlFor="password" text="Minimal 8 karakter" />
-        <InputAuth
-          id="password"
-          name="password"
-          type="password"
-          placeholder="Ucok Racing"
-        />
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 lg:gap-6 2xl:gap-8">
+        <div className="flex flex-col gap-2">
+          <LabelAuth htmlFor="password" text="Password" />
+          <InputAuth
+            id="password"
+            name="password"
+            type="password"
+            placeholder="Minimal 8 karakter"
+          />
+        </div>
+        <div className="flex flex-col gap-2">
+          <LabelAuth htmlFor="verifCode" text="Kode Verifikasi" />
+          <InputAuth
+            id="verifCode"
+            name="verifCode"
+            type="text"
+            placeholder="a9jd71"
+          />
+        </div>
       </div>
-      <div className="flex flex-col gap-2">
-        <LabelAuth htmlFor="verifCode" text="Kode Verifikasi" />
-        <InputAuth
-          id="verifCode"
-          name="verifCode"
-          type="text"
-          placeholder="a9jd71"
-        />
-      </div>
+
       <ButtonAuth disabled={pending} text={pending ? <Spinner /> : "Daftar"} />
     </form>
   );

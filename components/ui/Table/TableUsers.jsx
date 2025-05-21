@@ -1,8 +1,6 @@
 "use client";
 
 import { useEffect, useActionState, useMemo } from "react";
-import { deleteUserAction } from "@/app/actions";
-import { toast } from "react-toastify";
 import SearchInputUsers from "../Input/SearchInputUsers";
 import TableHeaderUsers from "./TableHeaderUsers";
 import PaginationUsers from "../Pagination/PaginationUsers";
@@ -15,14 +13,8 @@ const initialState = {
 };
 
 export default function TableUsers({ initialUsers }) {
-  const {
-    allUsers,
-    refreshUsers,
-    search,
-    currentPage,
-    setCurrentPage,
-    usersPerPage,
-  } = useUserStore();
+  const { allUsers, search, currentPage, setCurrentPage, usersPerPage } =
+    useUserStore();
 
   const filteredUsers = useMemo(() => {
     return allUsers.filter((user) =>
@@ -43,8 +35,6 @@ export default function TableUsers({ initialUsers }) {
     }
   };
 
-  const [state, formAction] = useActionState(deleteUserAction, initialState);
-
   useEffect(() => {
     if (initialState) {
       useUserStore.setState({
@@ -59,25 +49,6 @@ export default function TableUsers({ initialUsers }) {
     }
   }, [initialState]);
 
-  useEffect(() => {
-    if (!state) return;
-
-    if (state.success) {
-      toast.success(state.message, {
-        theme: "light",
-        autoClose: 1000,
-      });
-      refreshUsers();
-    }
-
-    if (!state.success && state.message) {
-      toast.error(state.message, {
-        theme: "light",
-        autoClose: 1000,
-      });
-    }
-  }, [state]);
-
   return (
     <div className="flex flex-col gap-6">
       <AddUserSection />
@@ -85,7 +56,7 @@ export default function TableUsers({ initialUsers }) {
       <div className="overflow-x-auto rounded-lg border border-gray-200 shadow-sm">
         <table className="w-full divide-y divide-gray-200">
           <TableHeaderUsers />
-          <TableBodyUsers currentUsers={currentUsers} formAction={formAction} />
+          <TableBodyUsers currentUsers={currentUsers} />
         </table>
       </div>
       <PaginationUsers

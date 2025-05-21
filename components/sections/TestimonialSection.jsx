@@ -15,7 +15,7 @@ export default function TestimonialSection() {
     {
       id: 1,
       name: "Rizky Aditya",
-      role: "Mahasiswa Teknik Informatika",
+      role: "Mahasiswa Manajemen Informatika",
       content:
         "PrakPoll sangat membantu proses pemilihan ketua jurusan tahun ini. Sistemnya aman dan hasilnya bisa langsung dilihat secara real-time. Tidak ada lagi keraguan tentang transparansi pemilihan.",
       rating: 5,
@@ -25,7 +25,7 @@ export default function TestimonialSection() {
     {
       id: 2,
       name: "Anisa Rahma",
-      role: "Mahasiswa Manajemen Bisnis",
+      role: "Mahasiswa Manajemen Bisnis Digital",
       content:
         "Sebagai panitia pemilihan BEM, PrakPoll membuat pekerjaan saya jauh lebih mudah. Manajemen user dan fitur pembatasan voting berdasarkan jurusan sangat bermanfaat untuk memastikan pemilihan berjalan sesuai aturan.",
       rating: 5,

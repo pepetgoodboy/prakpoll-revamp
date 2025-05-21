@@ -13,6 +13,8 @@ export default function HeroSection() {
             height={2800}
             className="w-full h-[80vh] rounded-[20px] object-cover object-center"
             priority
+            sizes="100vw"
+            quality={70}
           />
           <div className="absolute inset-0 rounded-[20px] bg-gradient-to-r from-purple-800 to-indigo-700 mix-blend-multiply"></div>
           <div className="absolute inset-0 rounded-[20px] bg-black/30"></div>

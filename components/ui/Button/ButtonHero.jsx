@@ -6,10 +6,10 @@ export default function ButtonHero({
   variant,
   disabled,
   textColor,
-  className = "",
+  className = "w-full",
   type = "button",
 }) {
-  const baseClass = `${className} px-4 sm:px-8 py-3 w-full rounded-[10px] bg-${variant} hover:bg-${variant}/80 text-${textColor} font-medium`;
+  const baseClass = `${className} px-4 sm:px-8 py-3 rounded-[10px] bg-${variant} hover:bg-${variant}/80 text-${textColor} font-medium`;
 
   if (disabled) {
     return (

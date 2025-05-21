@@ -193,7 +193,7 @@ export async function addUserAction(prevData, formData) {
   }
 }
 
-export async function deleteUserAction(prevData, formData) {
+export async function deleteUserAction(prevData, id) {
   const cookieStore = await cookies();
   const token = cookieStore.get("token");
 
@@ -201,11 +201,9 @@ export async function deleteUserAction(prevData, formData) {
     return null;
   }
 
-  const userId = formData.get("id");
-
   try {
     const response = await fetch(
-      `${process.env.NEXT_PUBLIC_URL}/api/users/delete/${userId}`,
+      `${process.env.NEXT_PUBLIC_URL}/api/users/delete/${id}`,
       {
         method: "DELETE",
         headers: {
@@ -224,6 +222,29 @@ export async function deleteUserAction(prevData, formData) {
     return { success: true, message: data.message };
   } catch (error) {
     console.error("Error deleting user:", error.message);
+  }
+}
+
+export async function getElectionsHomeAction() {
+  try {
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_URL}/api/elections/list-home`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    const result = await response.json();
+
+    if (!response.ok) {
+      return { message: result.message };
+    }
+
+    return result.data;
+  } catch (error) {
+    console.error("Error get all election:", error.message);
   }
 }
 
@@ -323,7 +344,7 @@ export async function getElectionByIdAction(id) {
   }
 }
 
-export async function deleteElectionAction(prevState, formData) {
+export async function deleteElectionAction(prevState, id) {
   const cookieStore = await cookies();
   const token = cookieStore.get("token");
 
@@ -331,12 +352,10 @@ export async function deleteElectionAction(prevState, formData) {
     return null;
   }
 
-  const electionId = formData.get("id");
-
   try {
     const response = await fetch(
       `
-      ${process.env.NEXT_PUBLIC_URL}/api/elections/delete/${electionId}`,
+      ${process.env.NEXT_PUBLIC_URL}/api/elections/delete/${id}`,
       {
         method: "DELETE",
         headers: {
@@ -497,7 +516,7 @@ export async function getElectionResultUser(idElection) {
   }
 }
 
-export async function addVoteAction(prevData, formData) {
+export async function addVoteAction(prevData, electionId, candidateId) {
   const cookieStore = await cookies();
   const token = cookieStore.get("token");
 
@@ -506,11 +525,8 @@ export async function addVoteAction(prevData, formData) {
   }
 
   try {
-    const idElection = formData.get("idElection");
-    const idCandidate = formData.get("idCandidate");
-
     const response = await fetch(
-      `${process.env.NEXT_PUBLIC_URL}/api/vote/add/${idElection}/${idCandidate}`,
+      `${process.env.NEXT_PUBLIC_URL}/api/vote/add/${electionId}/${candidateId}`,
       {
         method: "POST",
         headers: {

@@ -1,3 +1,5 @@
+"use client";
+
 import Image from "next/image";
 import { IoCalendarOutline } from "react-icons/io5";
 import dayjs from "dayjs";
@@ -5,26 +7,51 @@ import "dayjs/locale/id";
 import { FiUser } from "react-icons/fi";
 import ButtonHero from "../Button/ButtonHero";
 import Spinner from "../Spinner/Spinner";
-import { useTransition } from "react";
-import { useState } from "react";
+import { useActionState, useEffect } from "react";
+import { deleteElectionAction } from "@/app/actions";
+import { toast } from "react-toastify";
+import { useElectionStore } from "@/store/electionStore";
 
-export default function CardElectionAdmin({ election, formAction }) {
+const initialState = {
+  message: "",
+};
+
+export default function CardElectionAdmin({ election }) {
   const getTime = (date) => {
     return dayjs(date).locale("id").format("DD MMMM YYYY HH.mm");
   };
 
-  const [isDeleting, startTransition] = useTransition();
-  const [localState, setLocalState] = useState({ message: "" });
+  const { refreshElections } = useElectionStore();
 
-  const handleDelete = (e) => {
-    e.preventDefault();
-    const form = e.currentTarget;
-    startTransition(async () => {
-      const formData = new FormData(form);
-      const result = await formAction(formData);
-      setLocalState(result || { message: "Error terjadi" });
-    });
-  };
+  const deleteElectionActionWithId = deleteElectionAction.bind(
+    null,
+    null,
+    election.id
+  );
+
+  const [state, formAction, pending] = useActionState(
+    deleteElectionActionWithId,
+    initialState
+  );
+
+  useEffect(() => {
+    if (!state) return;
+
+    if (state.success) {
+      toast.success(state.message, {
+        theme: "light",
+        autoClose: 1000,
+      });
+      refreshElections();
+    }
+
+    if (!state.success && state.message) {
+      toast.error(state.message, {
+        theme: "light",
+        autoClose: 1000,
+      });
+    }
+  }, [state]);
 
   return (
     <div className="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300 flex flex-col h-full">
@@ -33,11 +60,14 @@ export default function CardElectionAdmin({ election, formAction }) {
           election.candidates.map((candidate, index) => (
             <div key={index} className="w-full relative">
               <Image
-                src={candidate.image || "/placeholder-image.jpg"}
-                alt={candidate.name || "Candidate"}
-                width={500}
-                height={500}
+                src={candidate.image}
+                alt={candidate.name}
+                priority
+                width={400}
+                height={200}
                 className="w-full h-full object-cover"
+                sizes="(max-width: 768px) 33vw, 33vw"
+                quality={60}
               />
               <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/50 to-transparent p-2">
                 <p className="text-white text-xs font-medium text-center">
@@ -84,28 +114,13 @@ export default function CardElectionAdmin({ election, formAction }) {
         </div>
 
         <div className="flex flex-col gap-2 mt-auto">
-          <form
-            id="deleteElection"
-            name="deleteElection"
-            onSubmit={handleDelete}
-          >
-            <input
-              type="hidden"
-              name="id"
-              value={election.id}
-              className="hidden"
-            />
+          <form id="deleteElection" name="deleteElection" action={formAction}>
             <button
               type="submit"
-              className="px-4 sm:px-8 py-3 w-full rounded-[10px] bg-white hover:bg-white/80 cursor-pointer text-red-600 border border-red-500 font-medium"
+              data-testid={`delete-election-${election.id}`}
+              className="px-4 sm:px-8 py-3 w-full inline-flex justify-center items-center rounded-[10px] bg-white hover:bg-white/80 cursor-pointer text-red-600 border border-red-500 font-medium"
             >
-              {isDeleting ? (
-                <div className="flex items-center justify-center">
-                  <Spinner variant="red-600" />
-                </div>
-              ) : (
-                "Hapus"
-              )}
+              {pending ? <Spinner variant="red-600" /> : "Hapus Pemilihan"}
             </button>
           </form>
           <ButtonHero

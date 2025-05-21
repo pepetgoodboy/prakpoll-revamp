@@ -19,6 +19,25 @@ const getAllElections = async () => {
   }
 };
 
+// Get 3 Election Home
+const getElectionsHome = async () => {
+  try {
+    const elections = await prisma.elections.findMany({
+      take: 3,
+      include: {
+        candidates: true,
+      },
+    });
+    return {
+      message: `Berhasil mengambil data ${elections.length} pemilihan`,
+      status: 200,
+      data: elections,
+    };
+  } catch (error) {
+    return { message: error.message, status: 500 };
+  }
+};
+
 // Get Elections by ID
 const getElectionsById = async (id) => {
   try {
@@ -470,6 +489,7 @@ const getElectionResultAdmin = async (id) => {
 
 export {
   getAllElections,
+  getElectionsHome,
   getElectionsById,
   getElectionsByStudyProgramOrUKM,
   createElection,

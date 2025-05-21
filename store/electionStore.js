@@ -38,6 +38,7 @@ export const useElectionStore = create((set, get) => ({
         elections: Array.isArray(updatedElections) ? updatedElections : [],
       });
       set({ loading: false });
+      set({ candidates: [{ name: "", vision: "", mission: "" }] });
     } catch (error) {
       console.error("Error refreshing elections:", error);
       set({ elections: [] });

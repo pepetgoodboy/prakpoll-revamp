@@ -1,6 +1,7 @@
 import Image from "next/image";
 import BGAuth from "@/public/bg-voting.webp";
 import Link from "next/link";
+import { HiMiniHome } from "react-icons/hi2";
 
 export default function AuthLayout({
   title,
@@ -19,14 +20,22 @@ export default function AuthLayout({
             fill
             className="object-cover object-center mix-blend-multiply"
             priority
+            sizes="(max-width: 1024px) 100vw, 50vw"
+            placeholder="blur"
+            quality={70}
           />
           <div className="absolute inset-0 bg-secondary mix-blend-multiply"></div>
         </div>
         <div className="flex flex-col gap-7 lg:gap-9 2xl:gap-11 w-full lg:w-1/2 lg:mx-auto lg:max-w-[388px]">
           <div className="flex flex-col gap-4 lg:gap-6 2xl:gap-8">
-            <h2 className="text-2xl lg:text-3xl 2xl:text-4xl font-semibold">
-              Selamat Datang 👋
-            </h2>
+            <div className="flex gap-2 sm:gap-3 items-center">
+              <Link href="/">
+                <HiMiniHome className="w-7 lg:w-10 2xl:w-11 h-auto text-secondary/80 hover:text-secondary" />
+              </Link>
+              <h2 className="text-2xl lg:text-3xl 2xl:text-4xl font-semibold">
+                Selamat Datang 👋
+              </h2>
+            </div>
             <p className="lg:text-lg 2xl:text-xl">
               <span className="font-semibold text-secondary">{title}</span>{" "}
               untuk melakukan pemilihan ketua organisasi mahasiswa{" "}

@@ -1,5 +1,5 @@
 import { getElectionResultUser } from "@/app/actions";
-import ElectionChart from "@/components/ui/Chart/ElectionChart";
+import ResultSectionUser from "@/components/sections/ResultSectionUser";
 import { notFound } from "next/navigation";
 
 export default async function DashboardUserResult({ params }) {
@@ -63,18 +63,13 @@ export default async function DashboardUserResult({ params }) {
 
   return (
     <div className="px-6 lg:px-8 lg:py-8 w-full">
-      <div className="flex flex-col gap-6">
-        <h1 className="text-2xl sm:text-3xl lg:text-4xl text-gray-900">
-          Pemilihan <span className="font-semibold">/ Hasil</span>
-        </h1>
-        <ElectionChart
-          id={id}
-          resultElection={resultElection}
-          data={data}
-          options={options}
-          eligibilityMap={eligibilityMap}
-        />
-      </div>
+      <ResultSectionUser
+        id={id}
+        resultElection={resultElection}
+        data={data}
+        options={options}
+        eligibilityMap={eligibilityMap}
+      />
     </div>
   );
 }
