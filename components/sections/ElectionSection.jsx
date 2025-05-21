@@ -3,8 +3,18 @@ import CardElection from "@/components/ui/Card/CardElection";
 import dayjs from "dayjs";
 import "dayjs/locale/id";
 
+async function fetchInitialElections() {
+  try {
+    const elections = await getElectionsHomeAction();
+    return Array.isArray(elections) ? elections : [];
+  } catch (error) {
+    console.error("Error fetching initial elections:", error);
+    return [];
+  }
+}
+
 export default async function ElectionSection() {
-  const elections = await getElectionsHomeAction();
+  const elections = await fetchInitialElections();
 
   const getTime = (date) => {
     return dayjs(date).locale("id").format("DD MMMM YYYY HH.mm");
