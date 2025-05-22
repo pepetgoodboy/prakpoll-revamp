@@ -1,20 +1,25 @@
+"use client";
+
 import { FiUserPlus, FiCheckCircle } from "react-icons/fi";
 import { LuLogIn } from "react-icons/lu";
 import { MdOutlineRemoveRedEye, MdOutlineHowToVote } from "react-icons/md";
 import { FaRegChartBar } from "react-icons/fa";
+import "aos/dist/aos.css";
+import { useEffect } from "react";
+import Aos from "aos";
 
 const steps = [
   {
     icon: <FiUserPlus className="w-6 h-6 text-white" />,
     title: "Daftar Akun",
     description:
-      "Mahasiswa wajib mendaftar menggunakan NIM aktif yang sudah terdaftar di sistem kampus.",
+      "Mahasiswa wajib mendaftar menggunakan NPM aktif yang sudah terdaftar di sistem kampus.",
   },
   {
     icon: <LuLogIn className="w-6 h-6 text-white" />,
     title: "Login ke Aplikasi",
     description:
-      "Gunakan NIM dan password untuk masuk ke dashboard pemilihan PrakPoll.",
+      "Gunakan NPM dan password untuk masuk ke dashboard pemilihan PrakPoll.",
   },
   {
     icon: <FiCheckCircle className="w-6 h-6 text-white" />,
@@ -39,10 +44,18 @@ const steps = [
 ];
 
 export default function GuideSection() {
+  useEffect(() => {
+    Aos.init({
+      offset: 200,
+      duration: 800,
+    });
+  });
+
   return (
     <section
       id="cara-penggunaan"
       className="pt-12 sm:pt-20 lg:pt-28 bg-white px-4 sm:px-0"
+      data-aos="fade-up"
     >
       <div className="max-w-5xl mx-auto px-4 lg:px-8">
         <div className="text-center mb-16">

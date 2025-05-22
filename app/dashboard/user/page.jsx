@@ -17,19 +17,24 @@ export default async function DashboardUser() {
     orConditions.push({ eligibility: user.studyProgramOrPosition });
   }
 
-  const totalElectionsActive = await prisma.elections.count({
-    where: {
-      startDate: {
-        lte: time,
-      },
-      endDate: {
-        gte: time,
-      },
-      OR: orConditions,
-    },
-  });
-  const totalVotes = await prisma.votes.count();
-  const totalCandidates = await prisma.candidates.count();
+  const [totalElectionsActive, totalVotes, totalCandidates] = await Promise.all(
+    [
+      prisma.elections.count({
+        where: {
+          startDate: {
+            lte: time,
+          },
+          endDate: {
+            gte: time,
+          },
+          OR: orConditions,
+        },
+      }),
+      prisma.votes.count(),
+      prisma.candidates.count(),
+    ]
+  );
+
   return (
     <div className="px-6 lg:px-8 lg:py-8 w-full">
       <div className="flex flex-col gap-6">

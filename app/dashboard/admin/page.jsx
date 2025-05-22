@@ -4,30 +4,34 @@ import { prisma } from "@/lib/prisma";
 
 export default async function DashboardAdmin() {
   const time = new Date();
-  const totalElectionsActive = await prisma.elections.count({
-    where: {
-      startDate: {
-        lte: time,
+
+  const [
+    totalElectionsActive,
+    totalVotes,
+    totalCandidates,
+    totalElectionsFinished,
+    totalUsers,
+  ] = await Promise.all([
+    prisma.elections.count({
+      where: {
+        startDate: { lte: time },
+        endDate: { gte: time },
       },
-      endDate: {
-        gte: time,
+    }),
+    prisma.votes.count(),
+    prisma.candidates.count(),
+    prisma.elections.count({
+      where: {
+        endDate: { lte: time },
       },
-    },
-  });
-  const totalVotes = await prisma.votes.count();
-  const totalCandidates = await prisma.candidates.count();
-  const totalElectionsFinished = await prisma.elections.count({
-    where: {
-      endDate: {
-        lte: time,
+    }),
+    prisma.users.count({
+      where: {
+        role: "User",
       },
-    },
-  });
-  const totalUsers = await prisma.users.count({
-    where: {
-      role: "User",
-    },
-  });
+    }),
+  ]);
+
   return (
     <div className="px-6 lg:px-8 lg:py-8 w-full">
       <div className="flex flex-col gap-2">

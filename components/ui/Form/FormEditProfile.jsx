@@ -10,6 +10,7 @@ import { editProfileUser } from "@/app/actions";
 import { useActionState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
+import Spinner from "../Spinner/Spinner";
 
 const initialState = {
   message: "",
@@ -93,7 +94,7 @@ export default function FormEditProfile() {
         </Link>
         <ButtonFormAdmin
           type="submit"
-          text={pending ? "Loading..." : "Simpan Perubahan"}
+          text={pending ? <Spinner /> : "Simpan Perubahan"}
           variant="secondary"
           hoverVariant="secondary/90"
         />

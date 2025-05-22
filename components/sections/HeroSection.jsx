@@ -1,9 +1,21 @@
+"use client";
+
 import Image from "next/image";
 import ButtonHero from "../ui/Button/ButtonHero";
+import { useEffect } from "react";
+import Aos from "aos";
+import "aos/dist/aos.css";
 
 export default function HeroSection() {
+  useEffect(() => {
+    Aos.init({
+      offset: 200,
+      duration: 500,
+    });
+  }, []);
+
   return (
-    <section id="beranda" className="relative mt-8">
+    <section id="beranda" className="relative mt-8" data-aos="fade-up">
       <div className="max-w-7xl px-4 lg:px-8 mx-auto">
         <div className="relative">
           <Image

@@ -1,12 +1,23 @@
+"use client";
+
 import { IoMdTimer } from "react-icons/io";
 import { TbUserEdit, TbUserShield } from "react-icons/tb";
 import { LiaVoteYeaSolid, LiaUsersSolid } from "react-icons/lia";
 import { IoPhonePortraitOutline } from "react-icons/io5";
 import CardFeature from "@/components/ui/Card/CardFeature";
+import Aos from "aos";
+import "aos/dist/aos.css";
+import { useEffect } from "react";
 
 export default function FeatureSection() {
+  useEffect(() => {
+    Aos.init({
+      offset: 200,
+      duration: 800,
+    });
+  });
   return (
-    <section id="fitur" className="pt-12 sm:pt-20 lg:pt-28">
+    <section id="fitur" className="pt-12 sm:pt-20 lg:pt-28" data-aos="fade-up">
       <div className="max-w-7xl px-4 lg:px-8 mx-auto">
         <div className="flex flex-col gap-6">
           <div className="flex flex-col gap-2">

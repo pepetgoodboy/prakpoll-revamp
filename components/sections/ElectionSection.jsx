@@ -1,27 +1,26 @@
-import { getElectionsHomeAction } from "@/app/actions";
-import CardElection from "@/components/ui/Card/CardElection";
+"use client";
+
 import dayjs from "dayjs";
 import "dayjs/locale/id";
+import CardElection from "../ui/Card/CardElection";
+import Aos from "aos";
+import "aos/dist/aos.css";
+import { useEffect } from "react";
 
-async function fetchInitialElections() {
-  try {
-    const elections = await getElectionsHomeAction();
-    return Array.isArray(elections) ? elections : [];
-  } catch (error) {
-    console.error("Error fetching initial elections:", error);
-    return [];
-  }
-}
-
-export default async function ElectionSection() {
-  const elections = await fetchInitialElections();
-
+export default function ElectionSection({ elections }) {
   const getTime = (date) => {
     return dayjs(date).locale("id").format("DD MMMM YYYY HH.mm");
   };
 
+  useEffect(() => {
+    Aos.init({
+      offset: 200,
+      duration: 800,
+    });
+  }, []);
+
   return (
-    <section id="pemilihan" className="py-16 bg-gray-50">
+    <section id="pemilihan" className="py-16 bg-gray-50" data-aos="fade-up">
       <div className="max-w-7xl px-4 lg:px-8 mx-auto">
         <div className="flex flex-col gap-10">
           <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4">

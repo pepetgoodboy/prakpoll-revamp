@@ -6,6 +6,8 @@ import { FaStar, FaQuoteRight } from "react-icons/fa";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa6";
 import { FiMessageSquare } from "react-icons/fi";
 import { LuQuote } from "react-icons/lu";
+import Aos from "aos";
+import "aos/dist/aos.css";
 
 export default function TestimonialSection() {
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -63,6 +65,13 @@ export default function TestimonialSection() {
     return () => clearInterval(interval);
   }, [isAnimating]);
 
+  useEffect(() => {
+    Aos.init({
+      offset: 200,
+      duration: 800,
+    });
+  }, []);
+
   const nextSlide = () => {
     setIsAnimating(true);
     setCurrentIndex((prevIndex) =>
@@ -89,6 +98,7 @@ export default function TestimonialSection() {
     <section
       id="testimoni"
       className="py-12 sm:py-20 lg:py-28 relative overflow-hidden"
+      data-aos="fade-up"
     >
       <div className="max-w-7xl px-4 lg:px-8 mx-auto relative">
         <div className="flex flex-col items-center gap-6">

@@ -1,6 +1,6 @@
 import Footer from "@/components/layout/Footer";
 import Navbar from "@/components/layout/Navbar";
-import ElectionSection from "@/components/sections/ElectionSection";
+import ElectionSectionWrapper from "@/components/sections/ElectionSectionWrapper";
 import FeatureSection from "@/components/sections/FeatureSection";
 import GuideSection from "@/components/sections/GuideSection";
 import HeroSection from "@/components/sections/HeroSection";
@@ -13,7 +13,7 @@ export default function Home() {
     <>
       <Navbar />
       <HeroSection />
-      <ElectionSection />
+      <ElectionSectionWrapper />
       <FeatureSection />
       <GuideSection />
       <TestimonialSection />
