@@ -109,7 +109,7 @@ const loginUser = async (body) => {
     // Check if password is correct
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
-      return { message: "Incorrect password", status: 401 };
+      return { message: "Password yang anda masukkan salah", status: 401 };
     }
 
     // Create and assign token

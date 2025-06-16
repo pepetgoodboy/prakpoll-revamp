@@ -1,21 +1,28 @@
-import dayjs from "dayjs";
-import "dayjs/locale/id";
-import Image from "next/image";
-import { IoCalendarOutline } from "react-icons/io5";
-import { FiUser } from "react-icons/fi";
-import ButtonHero from "../Button/ButtonHero";
+import dayjs from 'dayjs';
+import utc from 'dayjs/plugin/utc';
+import timezone from 'dayjs/plugin/timezone';
+import 'dayjs/locale/id';
+import Image from 'next/image';
+import { IoCalendarOutline } from 'react-icons/io5';
+import { FiUser } from 'react-icons/fi';
+import ButtonHero from '../Button/ButtonHero';
+
+dayjs.extend(utc);
+dayjs.extend(timezone);
 
 export default function CardElectionUser({ election }) {
-  const timeNow = new Date();
+  const timeNow = dayjs().tz('Asia/Jakarta');
+
   const checkVoteTime = (election) => {
-    const start = new Date(election.startDate);
-    const end = new Date(election.endDate);
-    return (
-      timeNow.getTime() < start.getTime() || timeNow.getTime() > end.getTime()
-    );
+    const start = dayjs(election.startDate).tz('Asia/Jakarta');
+    const end = dayjs(election.endDate).tz('Asia/Jakarta');
+    return timeNow.isBefore(start) || timeNow.isAfter(end);
   };
   const getTime = (date) => {
-    return dayjs(date).locale("id").format("DD MMMM YYYY HH.mm");
+    return dayjs(date)
+      .tz('Asia/Jakarta')
+      .locale('id')
+      .format('DD MMMM YYYY HH.mm');
   };
   return (
     <div className="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300 flex flex-col h-full">
@@ -35,7 +42,7 @@ export default function CardElectionUser({ election }) {
               />
               <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/50 to-transparent p-2">
                 <p className="text-white text-xs font-medium text-center">
-                  {candidate.name || "Unknown"}
+                  {candidate.name || 'Unknown'}
                 </p>
               </div>
             </div>
@@ -70,7 +77,7 @@ export default function CardElectionUser({ election }) {
             <div key={index} className="flex items-center">
               <FiUser className="w-4 h-4 mr-2 text-indigo-500" />
               <p className="text-sm text-gray-600">
-                Kandidat {index + 1}:{" "}
+                Kandidat {index + 1}:{' '}
                 <span className="font-medium">{candidate.name}</span>
               </p>
             </div>

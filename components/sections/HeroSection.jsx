@@ -1,10 +1,10 @@
-"use client";
+'use client';
 
-import Image from "next/image";
-import ButtonHero from "../ui/Button/ButtonHero";
-import { useEffect } from "react";
-import Aos from "aos";
-import "aos/dist/aos.css";
+import Image from 'next/image';
+import ButtonHero from '../ui/Button/ButtonHero';
+import { useEffect } from 'react';
+import Aos from 'aos';
+import 'aos/dist/aos.css';
 
 export default function HeroSection() {
   useEffect(() => {
@@ -46,13 +46,13 @@ export default function HeroSection() {
               </p>
               <div className="flex flex-col sm:flex-row gap-4 max-w-sm sm:max-w-none mx-auto w-full">
                 <ButtonHero
-                  href="#"
+                  href="/dashboard/user/pemilihan"
                   text="Lihat Pemilihan"
                   variant="white"
                   textColor="secondary"
                 />
                 <ButtonHero
-                  href="#"
+                  href="/dashboard/user/pemilihan"
                   text="Pilih Sekarang"
                   variant="secondary"
                   textColor="white"
