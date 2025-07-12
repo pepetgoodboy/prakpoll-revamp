@@ -1,15 +1,15 @@
-"use client";
+'use client';
 
-import { useEffect, useActionState, useMemo } from "react";
-import SearchInputUsers from "../Input/SearchInputUsers";
-import TableHeaderUsers from "./TableHeaderUsers";
-import PaginationUsers from "../Pagination/PaginationUsers";
-import TableBodyUsers from "./TableBodyUsers";
-import AddUserSection from "@/components/sections/AddUserSection";
-import { useUserStore } from "@/store/userStore";
+import { useEffect, useActionState, useMemo } from 'react';
+import SearchInputUsers from '../Input/SearchInputUsers';
+import TableHeaderUsers from './TableHeaderUsers';
+import PaginationUsers from '../Pagination/PaginationUsers';
+import TableBodyUsers from './TableBodyUsers';
+import AddUserSection from '@/components/sections/AddUserSection';
+import { useUserStore } from '@/store/userStore';
 
 const initialState = {
-  message: "",
+  message: '',
 };
 
 export default function TableUsers({ initialUsers }) {
@@ -34,6 +34,10 @@ export default function TableUsers({ initialUsers }) {
       setCurrentPage(page);
     }
   };
+
+  useEffect(() => {
+    useUserStore.getState().refreshStudyOrPosition();
+  }, []);
 
   useEffect(() => {
     if (initialState) {

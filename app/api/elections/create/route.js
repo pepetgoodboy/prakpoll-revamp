@@ -1,25 +1,25 @@
-import { NextResponse } from "next/server";
-import { createElection } from "@/controllers/electionsController";
-import { authMiddleware } from "@/middleware/authMiddleware";
+import { NextResponse } from 'next/server';
+import { createElection } from '@/controllers/electionsController';
+import { authMiddleware } from '@/middleware/authMiddleware';
 
 export const POST = authMiddleware(async (request) => {
   try {
     const formData = await request.formData();
 
-    const title = formData.get("title");
-    const type = formData.get("type");
-    const eligibility = formData.get("eligibility");
-    const startDate = formData.get("startDate");
-    const endDate = formData.get("endDate");
+    const title = formData.get('title');
+    const type = formData.get('type');
+    const eligibilityId = formData.get('eligibilityId');
+    const startDate = formData.get('startDate');
+    const endDate = formData.get('endDate');
 
     let candidatesData = [];
     try {
-      const candidatesRaw = formData.get("candidates");
+      const candidatesRaw = formData.get('candidates');
       candidatesData = candidatesRaw ? JSON.parse(candidatesRaw) : [];
     } catch (error) {
-      console.error("Gagal parse candidates:", error);
+      console.error('Gagal parse candidates:', error);
       return NextResponse.json(
-        { message: "Format data candidates tidak valid." },
+        { message: 'Format data candidates tidak valid.' },
         { status: 400 }
       );
     }
@@ -35,7 +35,7 @@ export const POST = authMiddleware(async (request) => {
     const electionData = {
       title,
       type,
-      eligibility,
+      eligibilityId,
       startDate: new Date(startDate),
       endDate: new Date(endDate),
       candidates: candidatesData,
@@ -44,7 +44,7 @@ export const POST = authMiddleware(async (request) => {
 
     const result = await createElection(electionData);
 
-    if ("error" in result) {
+    if ('error' in result) {
       return NextResponse.json(
         { message: result.message },
         { status: result.status }
@@ -56,9 +56,9 @@ export const POST = authMiddleware(async (request) => {
       { status: result.status }
     );
   } catch (error) {
-    console.error("Error di POST /api/elections/create:", error);
+    console.error('Error di POST /api/elections/create:', error);
     return NextResponse.json(
-      { message: "Terjadi kesalahan di server." },
+      { message: 'Terjadi kesalahan di server.' },
       { status: 500 }
     );
   }

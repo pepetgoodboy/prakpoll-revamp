@@ -1,6 +1,6 @@
-import { prisma } from "@/lib/prisma";
-import { checkVoteTime } from "@/middleware/checkVoteTime";
-import Pusher from "pusher";
+import { prisma } from '@/lib/prisma';
+import { checkVoteTime } from '@/middleware/checkVoteTime';
+import Pusher from 'pusher';
 
 const pusher = new Pusher({
   appId: process.env.PUSHER_APP_ID,
@@ -18,7 +18,7 @@ const addVote = async (id, candidateId, userId) => {
     });
 
     if (!election) {
-      return { message: "Pemilihan tidak ditemukan", status: 404 };
+      return { message: 'Pemilihan tidak ditemukan', status: 404 };
     }
 
     const timeCheck = checkVoteTime(election);
@@ -29,7 +29,7 @@ const addVote = async (id, candidateId, userId) => {
     });
 
     if (existingVote) {
-      return { message: "Anda hanya dapat memilih satu kali", status: 400 };
+      return { message: 'Anda hanya dapat memilih satu kali', status: 400 };
     }
 
     const candidate = await prisma.candidates.findUnique({
@@ -39,7 +39,7 @@ const addVote = async (id, candidateId, userId) => {
 
     if (!candidate || candidate.electionsId !== id) {
       return {
-        message: "Kandidat tidak valid untuk pemilihan ini",
+        message: 'Kandidat tidak valid untuk pemilihan ini',
         status: 400,
       };
     }
@@ -59,7 +59,11 @@ const addVote = async (id, candidateId, userId) => {
       select: {
         title: true,
         type: true,
-        eligibility: true,
+        eligibility: {
+          select: {
+            name: true,
+          },
+        },
         startDate: true,
         endDate: true,
         candidates: {
@@ -90,46 +94,50 @@ const addVote = async (id, candidateId, userId) => {
 
     // Total Voters
     let totalVoters = 0;
-    if (updatedElection.type === "UKM") {
+    if (updatedElection.type === 'UKM') {
       totalVoters = await prisma.users.count({
         where: {
-          ukm: updatedElection.eligibility,
-          role: "User",
+          ukm: {
+            name: updatedElection.eligibility.name,
+          },
+          role: 'User',
         },
       });
-    } else if (updatedElection.type === "Himpunan") {
+    } else if (updatedElection.type === 'Himpunan') {
       totalVoters = await prisma.users.count({
         where: {
-          studyProgramOrPosition: updatedElection.eligibility,
-          role: "User",
+          studyProgramOrPosition: {
+            name: updatedElection.eligibility.name,
+          },
+          role: 'User',
         },
       });
     } else {
       totalVoters = await prisma.users.count({
         where: {
-          role: "User",
+          role: 'User',
         },
       });
     }
 
     // Participation Rate
     const participationRate =
-      ((totalVotes / totalVoters) * 100).toFixed(2) + "%";
+      ((totalVotes / totalVoters) * 100).toFixed(2) + '%';
 
     const candidates = updatedElection.candidates.map((candidate) => ({
       name: candidate.name,
       voteCount: candidate.voteCount,
-      percentage: ((candidate.voteCount / totalVotes) * 100).toFixed(2) + "%",
+      percentage: ((candidate.voteCount / totalVotes) * 100).toFixed(2) + '%',
       votes: candidate.votes.map((vote) => ({
         userId: vote.userId,
-        fullname: vote.user?.fullname ?? "-",
+        fullname: vote.user?.fullname ?? '-',
         voteAt: vote.voteAt,
       })),
     }));
 
     // Users not voted with eligibility filter
     let whereClause = {
-      role: "User",
+      role: 'User',
       votes: {
         none: {
           electionId: id,
@@ -137,10 +145,14 @@ const addVote = async (id, candidateId, userId) => {
       },
     };
 
-    if (updatedElection.type === "UKM") {
-      whereClause.ukm = updatedElection.eligibility;
-    } else if (updatedElection.type === "Himpunan") {
-      whereClause.studyProgramOrPosition = updatedElection.eligibility;
+    if (updatedElection.type === 'UKM') {
+      whereClause.ukm = {
+        name: updatedElection.eligibility.name,
+      };
+    } else if (updatedElection.type === 'Himpunan') {
+      whereClause.studyProgramOrPosition = {
+        name: updatedElection.eligibility.name,
+      };
     }
 
     const usersNotVoted = await prisma.users.findMany({
@@ -154,7 +166,7 @@ const addVote = async (id, candidateId, userId) => {
     const resultUpdatedElectionAdmin = {
       title: updatedElection.title,
       type: updatedElection.type,
-      eligibility: updatedElection.eligibility,
+      eligibility: updatedElection.eligibility.name,
       startDate: updatedElection.startDate,
       endDate: updatedElection.endDate,
       totalVotes,
@@ -169,10 +181,10 @@ const addVote = async (id, candidateId, userId) => {
         labels: candidates.map((candidate) => candidate.name),
         datasets: [
           {
-            label: "Suara",
+            label: 'Suara',
             data: candidates.map((candidate) => candidate.voteCount),
-            backgroundColor: "rgba(78, 71, 228, 0.6)",
-            borderColor: "rgba(78, 71, 228, 1)",
+            backgroundColor: 'rgba(78, 71, 228, 0.6)',
+            borderColor: 'rgba(78, 71, 228, 1)',
             borderWidth: 1,
           },
         ],
@@ -183,7 +195,7 @@ const addVote = async (id, candidateId, userId) => {
     const resultUpdatedElectionUser = {
       title: updatedElection.title,
       type: updatedElection.type,
-      eligibility: updatedElection.eligibility,
+      eligibility: updatedElection.eligibility.name,
       startDate: updatedElection.startDate,
       endDate: updatedElection.endDate,
       totalVotes,
@@ -197,10 +209,10 @@ const addVote = async (id, candidateId, userId) => {
         labels: candidates.map((candidate) => candidate.name),
         datasets: [
           {
-            label: "Suara",
+            label: 'Suara',
             data: candidates.map((candidate) => candidate.voteCount),
-            backgroundColor: "rgba(78, 71, 228, 0.6)",
-            borderColor: "rgba(78, 71, 228, 1)",
+            backgroundColor: 'rgba(78, 71, 228, 0.6)',
+            borderColor: 'rgba(78, 71, 228, 1)',
             borderWidth: 1,
           },
         ],
@@ -211,19 +223,19 @@ const addVote = async (id, candidateId, userId) => {
     try {
       await pusher.trigger(
         `election-${id}`,
-        "update-result-admin",
+        'update-result-admin',
         updatedDataAdmin
       );
       await pusher.trigger(
         `election-${id}`,
-        "update-result-user",
+        'update-result-user',
         updatedDataUser
       );
     } catch (error) {
       console.log(error);
     }
 
-    return { message: "Berhasil memilih kandidat", status: 201 };
+    return { message: 'Berhasil memilih kandidat', status: 201 };
   } catch (error) {
     return { message: error.message, status: 500 };
   }

@@ -1,6 +1,6 @@
-import FormEditProfile from "@/components/ui/Form/FormEditProfile";
+import FormEditProfile from '@/components/ui/Form/FormEditProfile';
 
-export default function DashboardProfilUsers() {
+export default async function DashboardProfilUsers() {
   return (
     <div className="px-6 lg:px-8 lg:py-8 w-full">
       <div className="flex flex-col gap-8 sm:gap-10 lg:gap-12">

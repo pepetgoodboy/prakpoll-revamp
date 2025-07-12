@@ -8,34 +8,70 @@ datasource db {
 }
 
 model Users {
-  id                     String          @id @default(auto()) @map("_id") @db.ObjectId
-  npm                    String          @unique
-  fullname               String
-  password               String?
-  verifCode              String?
-  studyProgramOrPosition StudyOrPosition
-  ukm                    Ukm?
-  role                   Role            @default(User)
-  createdAt              DateTime        @default(now())
-  updatedAt              DateTime        @default(now())
-  votes                  Votes[]
+  id        String    @id @default(auto()) @map("_id") @db.ObjectId
+  npm       String    @unique
+  fullname  String
+  password  String?
+  verifCode String?
+  studyId   String    @db.ObjectId
+  ukmId     String?   @db.ObjectId
+  role      Role      @default(User)
+  createdAt DateTime  @default(now())
+  updatedAt DateTime? @updatedAt
+  votes     Votes[]
+
+  studyProgramOrPosition StudyOrPosition @relation(fields: [studyId], references: [id])
+  ukm                    Ukm?            @relation(fields: [ukmId], references: [id])
 
   @@map("users")
 }
 
+model StudyOrPosition {
+  id        String    @id @default(auto()) @map("_id") @db.ObjectId
+  name      String    @unique
+  createdAt DateTime  @default(now())
+  updatedAt DateTime? @updatedAt
+  users     Users[]
+
+  @@map("study_or_position")
+}
+
+model Ukm {
+  id        String    @id @default(auto()) @map("_id") @db.ObjectId
+  name      String    @unique
+  createdAt DateTime  @default(now())
+  updatedAt DateTime? @updatedAt
+  users     Users[]
+
+  @@map("ukms")
+}
+
 model Elections {
-  id          String       @id @default(auto()) @map("_id") @db.ObjectId
-  title       String
-  type        ElectionType
-  eligibility Eligibility
-  startDate   DateTime
-  endDate     DateTime
-  createdAt   DateTime     @default(now())
-  updatedAt   DateTime     @default(now())
-  candidates  Candidates[]
-  votes       Votes[]
+  id            String       @id @default(auto()) @map("_id") @db.ObjectId
+  title         String
+  type          ElectionType
+  eligibilityId String       @db.ObjectId
+  startDate     DateTime
+  endDate       DateTime
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime?    @updatedAt
+  candidates    Candidates[]
+  votes         Votes[]
+
+  eligibility Eligibility @relation(fields: [eligibilityId], references: [id])
 
   @@map("elections")
+}
+
+model Eligibility {
+  id        String      @id @default(auto()) @map("_id") @db.ObjectId
+  name      String
+  createdAt DateTime    @default(now())
+  updatedAt DateTime?   @updatedAt
+  elections Elections[]
+
+  @@unique([name])
+  @@map("eligibility")
 }
 
 model Candidates {
@@ -46,7 +82,7 @@ model Candidates {
   image       String
   voteCount   Int       @default(0)
   createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @default(now())
+  updatedAt   DateTime? @updatedAt
   electionsId String    @db.ObjectId
   elections   Elections @relation(fields: [electionsId], references: [id], onDelete: Cascade)
   votes       Votes[]
@@ -69,24 +105,6 @@ model Votes {
   @@map("votes")
 }
 
-enum StudyOrPosition {
-  Akuntansi
-  Perpajakan
-  Manajemen_Informatika    @map("Manajemen Informatika")
-  Manajemen_Bisnis_Digital @map("Manajemen Bisnis Digital")
-  Dosen
-  Akademik
-  Staff
-}
-
-enum Ukm {
-  Tidak_Ada @map("Tidak Ada")
-  Bamboo
-  IMSI
-  Futsal
-  Badminton
-}
-
 enum Role {
   User
   Admin
@@ -96,16 +114,4 @@ enum ElectionType {
   BEM
   Himpunan
   UKM
-}
-
-enum Eligibility {
-  All
-  Akuntansi
-  Perpajakan
-  Manajemen_Informatika    @map("Manajemen Informatika")
-  Manajemen_Bisnis_Digital @map("Manajemen Bisnis Digital")
-  Bamboo
-  IMSI
-  Futsal
-  Badminton
 }

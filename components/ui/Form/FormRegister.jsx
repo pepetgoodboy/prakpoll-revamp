@@ -1,16 +1,16 @@
-"use client";
+'use client';
 
-import LabelAuth from "@/components/ui/Label/LabelAuth";
-import InputAuth from "@/components/ui/Input/InputAuth";
-import ButtonAuth from "@/components/ui/Button/ButtonAuth";
-import { registerAction } from "@/app/actions";
-import { useActionState, useEffect } from "react";
-import { useRouter } from "next/navigation";
-import Spinner from "@/components/ui/Spinner/Spinner";
-import { toast } from "react-toastify";
+import LabelAuth from '@/components/ui/Label/LabelAuth';
+import InputAuth from '@/components/ui/Input/InputAuth';
+import ButtonAuth from '@/components/ui/Button/ButtonAuth';
+import { registerAction } from '@/app/actions';
+import { useActionState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
+import Spinner from '@/components/ui/Spinner/Spinner';
+import { toast } from 'react-toastify';
 
 const initialState = {
-  message: "",
+  message: '',
 };
 
 export default function FormRegister() {
@@ -24,8 +24,8 @@ export default function FormRegister() {
     if (!state) return;
 
     if (state.success) {
-      toast.success(state.message || "Registrasi berhasil!", {
-        theme: "light",
+      toast.success(state.message || 'Registrasi berhasil', {
+        theme: 'light',
         autoClose: 1000,
       });
 
@@ -39,8 +39,8 @@ export default function FormRegister() {
     }
 
     if (!state.success && state.message) {
-      toast.error(state.message || "Registrasi gagal!", {
-        theme: "light",
+      toast.error(state.message || 'Registrasi gagal!', {
+        theme: 'light',
         autoClose: 1000,
       });
     }
@@ -78,7 +78,7 @@ export default function FormRegister() {
         </div>
       </div>
 
-      <ButtonAuth disabled={pending} text={pending ? <Spinner /> : "Daftar"} />
+      <ButtonAuth disabled={pending} text={pending ? <Spinner /> : 'Daftar'} />
     </form>
   );
 }

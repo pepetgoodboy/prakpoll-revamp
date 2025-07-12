@@ -1,20 +1,34 @@
-import CardHeroDashboard from "@/components/ui/Card/CardHeroDashboard";
-import CardSummaryDashboard from "@/components/ui/Card/CardSummaryDashboard";
-import { prisma } from "@/lib/prisma";
-import { requireAuth } from "@/lib/auth";
+import CardHeroDashboard from '@/components/ui/Card/CardHeroDashboard';
+import CardSummaryDashboard from '@/components/ui/Card/CardSummaryDashboard';
+import { prisma } from '@/lib/prisma';
+import { requireAuth } from '@/lib/auth';
 
 export default async function DashboardUser() {
   const user = await requireAuth();
   const time = new Date();
-  const orConditions = [{ eligibility: "All" }];
-  const excludedPosition = ["Dosen", "Akademik", "Staff"];
+  const orConditions = [
+    {
+      eligibility: {
+        name: 'All',
+      },
+    },
+  ];
+  const excludedPosition = ['Dosen', 'Akademik', 'Staff'];
 
-  if (user.ukm !== "Tidak_Ada") {
-    orConditions.push({ eligibility: user.ukm });
+  if (user.ukm !== 'Tidak Ada') {
+    orConditions.push({
+      eligibility: {
+        name: user.ukm,
+      },
+    });
   }
 
   if (!excludedPosition.includes(user.studyProgramOrPosition)) {
-    orConditions.push({ eligibility: user.studyProgramOrPosition });
+    orConditions.push({
+      eligibility: {
+        name: user.studyProgramOrPosition,
+      },
+    });
   }
 
   const [totalElectionsActive, totalVotes, totalCandidates] = await Promise.all(

@@ -1,18 +1,40 @@
-import { prisma } from "@/lib/prisma";
-import { v2 as cloudinary } from "cloudinary";
+import { prisma } from '@/lib/prisma';
+import { v2 as cloudinary } from 'cloudinary';
+import { ObjectId } from 'mongodb';
 
 // Get All Elections
 const getAllElections = async () => {
   try {
     const elections = await prisma.elections.findMany({
-      include: {
+      select: {
+        id: true,
+        title: true,
+        type: true,
+        eligibility: {
+          select: {
+            name: true,
+          },
+        },
+        startDate: true,
+        endDate: true,
         candidates: true,
       },
     });
+
+    const formattedElections = elections.map((election) => ({
+      id: election.id,
+      title: election.title,
+      type: election.type,
+      eligibility: election.eligibility.name,
+      startDate: election.startDate,
+      endDate: election.endDate,
+      candidates: election.candidates,
+    }));
+
     return {
       message: `Berhasil mengambil data ${elections.length} pemilihan`,
       status: 200,
-      data: elections,
+      data: formattedElections,
     };
   } catch (error) {
     return { message: error.message, status: 500 };
@@ -23,15 +45,35 @@ const getAllElections = async () => {
 const getElectionsHome = async () => {
   try {
     const elections = await prisma.elections.findMany({
-      take: 3,
-      include: {
+      select: {
+        id: true,
+        title: true,
+        type: true,
+        eligibility: {
+          select: {
+            name: true,
+          },
+        },
+        startDate: true,
+        endDate: true,
         candidates: true,
       },
+      take: 3,
     });
+
+    const formattedElections = elections.map((election) => ({
+      id: election.id,
+      title: election.title,
+      type: election.type,
+      eligibility: election.eligibility.name,
+      startDate: election.startDate,
+      endDate: election.endDate,
+      candidates: election.candidates,
+    }));
     return {
       message: `Berhasil mengambil data ${elections.length} pemilihan`,
       status: 200,
-      data: elections,
+      data: formattedElections,
     };
   } catch (error) {
     return { message: error.message, status: 500 };
@@ -45,13 +87,33 @@ const getElectionsById = async (id) => {
       where: {
         id,
       },
-      include: {
+      select: {
+        id: true,
+        title: true,
+        type: true,
+        eligibility: {
+          select: {
+            name: true,
+          },
+        },
+        startDate: true,
+        endDate: true,
         candidates: true,
       },
     });
+
+    const formattedElection = {
+      id: election.id,
+      title: election.title,
+      type: election.type,
+      eligibility: election.eligibility.name,
+      startDate: election.startDate,
+      endDate: election.endDate,
+      candidates: election.candidates,
+    };
     return {
-      message: "Berhasil mengambil data pemilihan",
-      data: election,
+      message: 'Berhasil mengambil data pemilihan',
+      data: formattedElection,
       status: 200,
     };
   } catch (error) {
@@ -62,64 +124,126 @@ const getElectionsById = async (id) => {
 // Get Elections by Study Program or UKM
 const getElectionsByStudyProgramOrUKM = async (studyProgramOrPosition, ukm) => {
   try {
-    // Check if ukm is null & studyProgramOrPosition is Dosen, Akademik, or Staff
+    // 1. Jika ukm "Tidak Ada" & studyProgramOrPosition termasuk staff/karyawan
     if (
-      ukm === "Tidak_Ada" &&
-      (studyProgramOrPosition === "Dosen" ||
-        studyProgramOrPosition === "Akademik" ||
-        studyProgramOrPosition === "Staff")
+      ukm === 'Tidak Ada' &&
+      ['Dosen', 'Akademik', 'Staff'].includes(studyProgramOrPosition)
     ) {
       const elections = await prisma.elections.findMany({
         where: {
-          eligibility: "All",
+          eligibility: { name: 'All' },
         },
-        include: {
+        select: {
+          id: true,
+          title: true,
+          type: true,
+          eligibility: {
+            select: { name: true },
+          },
+          startDate: true,
+          endDate: true,
           candidates: true,
         },
       });
+
+      const formattedElections = elections.map((election) => ({
+        id: election.id,
+        title: election.title,
+        type: election.type,
+        eligibility: election.eligibility.name,
+        startDate: election.startDate,
+        endDate: election.endDate,
+        candidates: election.candidates,
+      }));
+
       return {
-        message: "Berhasil mengambil data pemilihan",
-        data: elections,
+        message: 'Berhasil mengambil data pemilihan',
+        data: formattedElections,
         status: 200,
       };
     }
 
-    // Check if ukm is null
-    if (ukm === "Tidak_Ada") {
+    // 2. Jika ukm "Tidak Ada" (berarti hanya berdasarkan jurusan/study)
+    if (ukm === 'Tidak Ada') {
       const elections = await prisma.elections.findMany({
         where: {
-          OR: [{ eligibility: studyProgramOrPosition }, { eligibility: "All" }],
+          OR: [
+            { eligibility: { name: studyProgramOrPosition } },
+            { eligibility: { name: 'All' } },
+          ],
         },
-        include: {
+        select: {
+          id: true,
+          title: true,
+          type: true,
+          eligibility: {
+            select: { name: true },
+          },
+          startDate: true,
+          endDate: true,
           candidates: true,
         },
       });
+
+      const formattedElections = elections.map((election) => ({
+        id: election.id,
+        title: election.title,
+        type: election.type,
+        eligibility: election.eligibility.name,
+        startDate: election.startDate,
+        endDate: election.endDate,
+        candidates: election.candidates,
+      }));
+
       return {
-        message: "Berhasil mengambil data pemilihan",
-        data: elections,
+        message: 'Berhasil mengambil data pemilihan',
+        data: formattedElections,
         status: 200,
       };
     }
 
+    // 3. Jika user punya UKM
     const elections = await prisma.elections.findMany({
       where: {
         OR: [
-          { eligibility: studyProgramOrPosition },
-          { eligibility: ukm },
-          { eligibility: "All" },
+          { eligibility: { name: studyProgramOrPosition } },
+          { eligibility: { name: ukm } },
+          { eligibility: { name: 'All' } },
         ],
       },
-      include: {
+      select: {
+        id: true,
+        title: true,
+        type: true,
+        eligibility: {
+          select: { name: true },
+        },
+        startDate: true,
+        endDate: true,
         candidates: true,
       },
     });
+
+    const formattedElections = elections.map((election) => ({
+      id: election.id,
+      title: election.title,
+      type: election.type,
+      eligibility: election.eligibility.name,
+      startDate: election.startDate,
+      endDate: election.endDate,
+      candidates: election.candidates,
+    }));
+
     return {
-      message: "Berhasil mengambil data pemilihan",
-      data: elections,
+      message: 'Berhasil mengambil data pemilihan',
+      data: formattedElections,
       status: 200,
     };
   } catch (error) {
-    return { message: error.message, status: 500 };
+    return {
+      message: error.message,
+      status: 500,
+    };
   }
 };
 
@@ -137,19 +261,38 @@ const uploadToCloudinary = async (file) => {
     const bytes = await file.arrayBuffer();
     const buffer = Buffer.from(bytes);
     const base64String = `data:${file.type};base64,${buffer.toString(
-      "base64"
+      'base64'
     )}`;
 
     // Upload to Cloudinary
     const result = await cloudinary.uploader.upload(base64String, {
-      folder: "prakpoll",
+      folder: 'prakpoll',
       use_filename: true,
     });
 
     return result.secure_url;
   } catch (error) {
-    console.error("Error uploading to Cloudinary:", error);
-    throw new Error("Image upload failed");
+    console.error('Error uploading to Cloudinary:', error);
+    throw new Error('Image upload failed');
+  }
+};
+
+// Get All Eligibility
+const getAllEligibility = async () => {
+  try {
+    const eligibility = await prisma.eligibility.findMany({
+      select: {
+        id: true,
+        name: true,
+      },
+    });
+    return {
+      message: 'Berhasil mengambil data kriteria',
+      data: eligibility,
+      status: 200,
+    };
+  } catch (error) {
+    return { message: error.message, status: 500 };
   }
 };
 
@@ -158,7 +301,7 @@ const createElection = async (body) => {
   const {
     title,
     type,
-    eligibility,
+    eligibilityId,
     startDate,
     endDate,
     candidates,
@@ -167,16 +310,16 @@ const createElection = async (body) => {
 
   try {
     // Validate if required fields are present
-    if (!title || !type || !eligibility || !startDate || !endDate) {
-      return { message: "Semua baris wajib diisi", status: 400 };
+    if (!title || !type || !eligibilityId || !startDate || !endDate) {
+      return { message: 'Semua baris wajib diisi', status: 400 };
     }
 
     if (!candidates || candidates.length <= 1) {
-      return { message: "Minimal dua kandidat", status: 400 };
+      return { message: 'Minimal dua kandidat', status: 400 };
     }
 
     if (startDate > endDate || endDate < startDate) {
-      return { message: "Tanggal pemilihan tidak valid", status: 400 };
+      return { message: 'Tanggal pemilihan tidak valid', status: 400 };
     }
 
     const candidatesWithImages = [...candidates];
@@ -199,7 +342,7 @@ const createElection = async (body) => {
         data: {
           title,
           type,
-          eligibility,
+          eligibilityId: new ObjectId(eligibilityId),
           startDate,
           endDate,
           candidates: {
@@ -207,7 +350,7 @@ const createElection = async (body) => {
               name: candidate.name,
               vision: candidate.vision,
               mission: candidate.mission,
-              image: candidate.image || "",
+              image: candidate.image || '',
             })),
           },
         },
@@ -220,7 +363,7 @@ const createElection = async (body) => {
     });
 
     return {
-      message: "Berhasil menambahkan pemilihan",
+      message: 'Berhasil menambahkan pemilihan',
       status: 201,
     };
   } catch (error) {
@@ -246,7 +389,7 @@ const deleteElection = async (id) => {
     });
 
     if (!election) {
-      return { status: 404, message: "Pemilihan tidak ditemukan!" };
+      return { status: 404, message: 'Pemilihan tidak ditemukan!' };
     }
 
     // Delete images from Cloudinary
@@ -254,10 +397,10 @@ const deleteElection = async (id) => {
       if (candidate.image !== null) {
         const image = candidate.image;
         const publicId = image
-          .split("/")
+          .split('/')
           .slice(-2)
-          .join("/")
-          .replace(/\.[^.]+$/, "");
+          .join('/')
+          .replace(/\.[^.]+$/, '');
         await cloudinary.uploader.destroy(publicId);
       }
     }
@@ -269,12 +412,13 @@ const deleteElection = async (id) => {
       },
     });
 
-    return { message: "Berhasil menghapus pemilihan", status: 200 };
+    return { message: 'Berhasil menghapus pemilihan', status: 200 };
   } catch (error) {
     return { message: error.message, status: 500 };
   }
 };
 
+// Get Election Result User
 const getElectionResult = async (id) => {
   try {
     const election = await prisma.elections.findUnique({
@@ -284,7 +428,11 @@ const getElectionResult = async (id) => {
       select: {
         title: true,
         type: true,
-        eligibility: true,
+        eligibility: {
+          select: {
+            name: true,
+          },
+        },
         startDate: true,
         endDate: true,
         candidates: {
@@ -306,42 +454,46 @@ const getElectionResult = async (id) => {
     const candidates = election.candidates.map((candidate) => ({
       name: candidate.name,
       voteCount: candidate.voteCount,
-      percentage: ((candidate.voteCount / totalVotes) * 100).toFixed(2) + "%",
+      percentage: ((candidate.voteCount / totalVotes) * 100).toFixed(2) + '%',
     }));
 
     // Total Voters
     let totalVoters = 0;
-    if (election.type === "UKM") {
+    if (election.type === 'UKM') {
       totalVoters = await prisma.users.count({
         where: {
-          ukm: election.eligibility,
-          role: "User",
+          ukm: {
+            name: election.eligibility.name,
+          },
+          role: 'User',
         },
       });
-    } else if (election.type === "Himpunan") {
+    } else if (election.type === 'Himpunan') {
       totalVoters = await prisma.users.count({
         where: {
-          studyProgramOrPosition: election.eligibility,
-          role: "User",
+          studyProgramOrPosition: {
+            name: election.eligibility.name,
+          },
+          role: 'User',
         },
       });
     } else {
       totalVoters = await prisma.users.count({
         where: {
-          role: "User",
+          role: 'User',
         },
       });
     }
 
     // Participation Rate
     const participationRate =
-      ((totalVotes / totalVoters) * 100).toFixed(2) + "%";
+      ((totalVotes / totalVoters) * 100).toFixed(2) + '%';
 
     // Result
     const result = {
       title: election.title,
       type: election.type,
-      eligibility: election.eligibility,
+      eligibility: election.eligibility.name,
       startDate: election.startDate,
       endDate: election.endDate,
       totalVotes,
@@ -351,7 +503,7 @@ const getElectionResult = async (id) => {
     };
 
     return {
-      message: "Berhasil mengambil data pemilihan",
+      message: 'Berhasil mengambil data pemilihan',
       data: result,
       status: 200,
     };
@@ -360,6 +512,7 @@ const getElectionResult = async (id) => {
   }
 };
 
+// Get Election Result Admin
 const getElectionResultAdmin = async (id) => {
   try {
     const election = await prisma.elections.findUnique({
@@ -369,7 +522,11 @@ const getElectionResultAdmin = async (id) => {
       select: {
         title: true,
         type: true,
-        eligibility: true,
+        eligibility: {
+          select: {
+            name: true,
+          },
+        },
         startDate: true,
         endDate: true,
         candidates: {
@@ -403,45 +560,49 @@ const getElectionResultAdmin = async (id) => {
     const candidates = election.candidates.map((candidate) => ({
       name: candidate.name,
       voteCount: candidate.voteCount,
-      percentage: ((candidate.voteCount / totalVotes) * 100).toFixed(2) + "%",
+      percentage: ((candidate.voteCount / totalVotes) * 100).toFixed(2) + '%',
       votes: candidate.votes.map((vote) => ({
         userId: vote.userId,
-        fullname: vote.user?.fullname ?? "-",
+        fullname: vote.user?.fullname ?? '-',
         voteAt: vote.voteAt,
       })),
     }));
 
     // Total Voters
     let totalVoters = 0;
-    if (election.type === "UKM") {
+    if (election.type === 'UKM') {
       totalVoters = await prisma.users.count({
         where: {
-          ukm: election.eligibility,
-          role: "User",
+          ukm: {
+            name: election.eligibility.name,
+          },
+          role: 'User',
         },
       });
-    } else if (election.type === "Himpunan") {
+    } else if (election.type === 'Himpunan') {
       totalVoters = await prisma.users.count({
         where: {
-          studyProgramOrPosition: election.eligibility,
-          role: "User",
+          studyProgramOrPosition: {
+            name: election.eligibility.name,
+          },
+          role: 'User',
         },
       });
     } else {
       totalVoters = await prisma.users.count({
         where: {
-          role: "User",
+          role: 'User',
         },
       });
     }
 
     // Participation Rate
     const participationRate =
-      ((totalVotes / totalVoters) * 100).toFixed(2) + "%";
+      ((totalVotes / totalVoters) * 100).toFixed(2) + '%';
 
     // Users not voted with eligibility filter
     let whereClause = {
-      role: "User",
+      role: 'User',
       votes: {
         none: {
           electionId: id,
@@ -449,10 +610,14 @@ const getElectionResultAdmin = async (id) => {
       },
     };
 
-    if (election.type === "UKM") {
-      whereClause.ukm = election.eligibility;
-    } else if (election.type === "Himpunan") {
-      whereClause.studyProgramOrPosition = election.eligibility;
+    if (election.type === 'UKM') {
+      whereClause.ukm = {
+        name: election.eligibility.name,
+      };
+    } else if (election.type === 'Himpunan') {
+      whereClause.studyProgramOrPosition = {
+        name: election.eligibility.name,
+      };
     }
 
     const usersNotVoted = await prisma.users.findMany({
@@ -467,7 +632,7 @@ const getElectionResultAdmin = async (id) => {
     const result = {
       title: election.title,
       type: election.type,
-      eligibility: election.eligibility,
+      eligibility: election.eligibility.name,
       startDate: election.startDate,
       endDate: election.endDate,
       totalVotes,
@@ -478,7 +643,7 @@ const getElectionResultAdmin = async (id) => {
     };
 
     return {
-      message: "Berhasil mengambil data pemilihan",
+      message: 'Berhasil mengambil data pemilihan',
       data: result,
       status: 200,
     };
@@ -492,6 +657,7 @@ export {
   getElectionsHome,
   getElectionsById,
   getElectionsByStudyProgramOrUKM,
+  getAllEligibility,
   createElection,
   deleteElection,
   getElectionResult,

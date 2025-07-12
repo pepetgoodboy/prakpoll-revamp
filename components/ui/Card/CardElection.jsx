@@ -1,7 +1,7 @@
-import Image from "next/image";
-import ButtonHero from "@/components/ui/Button/ButtonHero";
-import { IoCalendarOutline } from "react-icons/io5";
-import { FiUser } from "react-icons/fi";
+import Image from 'next/image';
+import ButtonHero from '@/components/ui/Button/ButtonHero';
+import { IoCalendarOutline } from 'react-icons/io5';
+import { FiUser } from 'react-icons/fi';
 
 export default function CardElection({
   electionId,
@@ -48,7 +48,7 @@ export default function CardElection({
             <div key={index} className="flex items-center">
               <FiUser className="w-4 h-4 mr-2 text-indigo-500" />
               <p className="text-sm text-gray-600">
-                Kandidat {index + 1}:{" "}
+                Kandidat {index + 1}:{' '}
                 <span className="font-medium">{candidate.name}</span>
               </p>
             </div>

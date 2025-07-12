@@ -1,5 +1,5 @@
-import { useUserStore } from "@/store/userStore";
-import ModalAddUser from "../ui/Modal/ModalAddUser";
+import { useUserStore } from '@/store/userStore';
+import ModalAddUser from '../ui/Modal/ModalAddUser';
 
 export default function AddUserSection() {
   const { openModalAddUser, toggleModalAddUser } = useUserStore();

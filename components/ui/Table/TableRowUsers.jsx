@@ -1,20 +1,15 @@
-import { FaRegTrashCan } from "react-icons/fa6";
-import { deleteUserAction } from "@/app/actions";
-import { toast } from "react-toastify";
-import { useActionState, useEffect } from "react";
-import { useUserStore } from "@/store/userStore";
-import Spinner from "../Spinner/Spinner";
+import { FaRegTrashCan } from 'react-icons/fa6';
+import { deleteUserAction } from '@/app/actions';
+import { toast } from 'react-toastify';
+import { useActionState, useEffect } from 'react';
+import { useUserStore } from '@/store/userStore';
+import Spinner from '../Spinner/Spinner';
 
 const initialState = {
-  message: "",
+  message: '',
 };
 
 export default function TableRowUsers({ user }) {
-  const studyProgramOrPositionMap = {
-    Manajemen_Informatika: "Manajemen Informatika",
-    Manajemen_Bisnis_Digital: "Manajemen Bisnis Digital",
-  };
-
   const { refreshUsers } = useUserStore();
 
   const deleteUserActionWithId = deleteUserAction.bind(null, null, user.id);
@@ -29,7 +24,7 @@ export default function TableRowUsers({ user }) {
 
     if (state.success) {
       toast.success(state.message, {
-        theme: "light",
+        theme: 'light',
         autoClose: 1000,
       });
       refreshUsers();
@@ -37,7 +32,7 @@ export default function TableRowUsers({ user }) {
 
     if (!state.success && state.message) {
       toast.error(state.message, {
-        theme: "light",
+        theme: 'light',
         autoClose: 1000,
       });
     }
@@ -52,11 +47,10 @@ export default function TableRowUsers({ user }) {
         {user.fullname}
       </td>
       <td className="px-4 py-3 text-sm text-gray-900 whitespace-nowrap">
-        {studyProgramOrPositionMap[user.studyProgramOrPosition] ||
-          user.studyProgramOrPosition}
+        {user.studyProgramOrPosition}
       </td>
       <td className="px-4 py-3 text-sm text-gray-900 whitespace-nowrap">
-        {user.ukm === "Tidak_Ada" ? "-" : user.ukm}
+        {user.ukm}
       </td>
       <td className="px-4 py-3 text-sm text-gray-900 whitespace-nowrap">
         {user.verifCode}

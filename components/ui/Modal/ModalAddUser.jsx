@@ -1,19 +1,18 @@
-"use client";
+'use client';
 
-import { IoCloseCircleOutline } from "react-icons/io5";
-import { addUserAction } from "@/app/actions";
-import { useActionState, useEffect } from "react";
-import { toast } from "react-toastify";
-import Spinner from "@/components/ui/Spinner/Spinner";
-import { useUserStore } from "@/store/userStore";
+import { IoCloseCircleOutline } from 'react-icons/io5';
+import { addUserAction } from '@/app/actions';
+import { useActionState, useEffect } from 'react';
+import { toast } from 'react-toastify';
+import Spinner from '@/components/ui/Spinner/Spinner';
+import { useUserStore } from '@/store/userStore';
 
 const initialState = {
-  message: "",
+  message: '',
 };
 
 export default function ModalAddUser() {
-  const { toggleModalAddUser, refreshUsers } = useUserStore();
-
+  const { toggleModalAddUser, refreshUsers, studyOrPosition } = useUserStore();
   const [state, formAction, pending] = useActionState(
     addUserAction,
     initialState
@@ -24,7 +23,7 @@ export default function ModalAddUser() {
 
     if (state.success) {
       toast.success(state.message, {
-        theme: "light",
+        theme: 'light',
         autoClose: 1000,
       });
       refreshUsers();
@@ -33,7 +32,7 @@ export default function ModalAddUser() {
 
     if (!state.success && state.message) {
       toast.error(state.message, {
-        theme: "light",
+        theme: 'light',
         autoClose: 1000,
       });
     }
@@ -98,17 +97,15 @@ export default function ModalAddUser() {
                 name="studyProgramOrPosition"
                 className="p-3 rounded-lg border border-gray-200 w-full outline-none focus:border-2 focus:border-secondary/70"
               >
-                <option value="Akuntansi">Akuntansi</option>
-                <option value="Perpajakan">Perpajakan</option>
-                <option value="Manajemen_Informatika">
-                  Manajemen Informatika
-                </option>
-                <option value="Manajemen_Bisnis_Digital">
-                  Manajemen Bisnis Digital
-                </option>
-                <option value="Dosen">Dosen</option>
-                <option value="Akademik">Akademik</option>
-                <option value="Staff">Staff</option>
+                {studyOrPosition.length > 0 ? (
+                  studyOrPosition.map((item) => (
+                    <option key={item.id} value={item.id}>
+                      {item.name}
+                    </option>
+                  ))
+                ) : (
+                  <option value="">Tidak ada data</option>
+                )}
               </select>
             </div>
             <div className="flex justify-end items-end">
@@ -126,7 +123,7 @@ export default function ModalAddUser() {
                   disabled={pending}
                   className="px-6 py-2 rounded-xl bg-secondary hover:bg-secondary/90 transition-all duration-200 ease-in text-white w-fit cursor-pointer"
                 >
-                  {pending ? <Spinner /> : "Tambah User"}
+                  {pending ? <Spinner /> : 'Tambah User'}
                 </button>
               </div>
             </div>

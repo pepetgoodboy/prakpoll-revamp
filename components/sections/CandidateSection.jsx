@@ -1,17 +1,17 @@
-"use client";
+'use client';
 
-import Image from "next/image";
-import { BiUser } from "react-icons/bi";
-import { RxTarget } from "react-icons/rx";
-import { FaTasks } from "react-icons/fa";
-import { useActionState, useEffect } from "react";
-import { addVoteAction } from "@/app/actions";
-import { useRouter } from "next/navigation";
-import { toast } from "react-toastify";
-import Spinner from "../ui/Spinner/Spinner";
+import Image from 'next/image';
+import { BiUser } from 'react-icons/bi';
+import { RxTarget } from 'react-icons/rx';
+import { FaTasks } from 'react-icons/fa';
+import { useActionState, useEffect } from 'react';
+import { addVoteAction } from '@/app/actions';
+import { useRouter } from 'next/navigation';
+import { toast } from 'react-toastify';
+import Spinner from '../ui/Spinner/Spinner';
 
 const initialState = {
-  message: "",
+  message: '',
 };
 
 export default function CandidateSection({ election }) {
@@ -36,8 +36,8 @@ export default function CandidateSection({ election }) {
           if (!state) return;
 
           if (state.success) {
-            toast.success(state.message || "Berhasil memilih kandidat", {
-              theme: "light",
+            toast.success(state.message || 'Berhasil memilih kandidat', {
+              theme: 'light',
               autoClose: 1000,
             });
 
@@ -51,8 +51,8 @@ export default function CandidateSection({ election }) {
           }
 
           if (!state.success && state.message) {
-            toast.error(state.message || "Gagal memilih kandidat", {
-              theme: "light",
+            toast.error(state.message || 'Gagal memilih kandidat', {
+              theme: 'light',
               autoClose: 1000,
             });
           }
@@ -80,7 +80,7 @@ export default function CandidateSection({ election }) {
               <div className="flex gap-2 items-center">
                 <BiUser className="text-xl text-indigo-500" />
                 <h3 className="text-lg text-gray-800">
-                  Nama Kandidat:{" "}
+                  Nama Kandidat:{' '}
                   <span className="font-semibold">{candidate.name}</span>
                 </h3>
               </div>
@@ -100,7 +100,7 @@ export default function CandidateSection({ election }) {
                   <h3 className="text-lg text-gray-800">Misi Kandidat</h3>
                 </div>
                 <ul className="text-gray-800 list-disc ml-5 space-y-2">
-                  {candidate.mission.split("\n").map((mission, index) => (
+                  {candidate.mission.split('\n').map((mission, index) => (
                     <li key={index} className="text-sm min-h-[24px] py-1">
                       {mission}
                     </li>
@@ -130,13 +130,14 @@ export default function CandidateSection({ election }) {
                     className="w-full flex justify-center bg-secondary hover:bg-secondary/80 disabled:bg-secondary/50 transition-all duration-300 ease-in-out cursor-pointer rounded-[12px] text-white p-[14px] text-center"
                     type="submit"
                     disabled={pending}
+                    data-testid={`add-vote-button-${candidate.id}`}
                   >
                     {pending ? (
                       <div className="flex items-center justify-center">
                         <Spinner />
                       </div>
                     ) : (
-                      "Pilih Kandidat"
+                      'Pilih Kandidat'
                     )}
                   </button>
                 </form>

@@ -1,9 +1,11 @@
-"use client";
+'use client';
 
-import { useState } from "react";
+import { useUserStore } from '@/store/userStore';
+import { useEffect, useState } from 'react';
 
 export default function SelectUkm({ defaultValue }) {
-  const [value, setValue] = useState(defaultValue || "Tidak_Ada");
+  const ukm = useUserStore((state) => state.ukm);
+  const [value, setValue] = useState(defaultValue);
 
   return (
     <select
@@ -13,11 +15,11 @@ export default function SelectUkm({ defaultValue }) {
       onChange={(e) => setValue(e.target.value)}
       className="w-full max-w-xs xl:max-w-md py-2 px-4 text-gray-900 bg-white rounded-lg border border-gray-300 outline-none focus:border-2 focus:border-secondary"
     >
-      <option value="Tidak_Ada">Tidak Ada</option>
-      <option value="Bamboo">Bamboo</option>
-      <option value="IMSI">IMSI</option>
-      <option value="Futsal">Futsal</option>
-      <option value="Badminton">Badminton</option>
+      {ukm.map((item) => (
+        <option key={item.id} value={item.id}>
+          {item.name}
+        </option>
+      ))}
     </select>
   );
 }

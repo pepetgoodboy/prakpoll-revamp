@@ -85,21 +85,25 @@ export default function CardElectionUser({ election }) {
         </div>
 
         <div className="flex flex-col gap-2 mt-auto">
-          <ButtonHero
-            href={`/dashboard/user/pemilihan/vote/${election.id}`}
-            text="Vote Sekarang"
-            disabled={checkVoteTime(election)}
-            variant="white"
-            textColor="secondary"
-            className="w-full border border-secondary"
-          />
-          <ButtonHero
-            href={`/dashboard/user/pemilihan/${election.id}`}
-            text="Lihat Hasil"
-            variant="secondary"
-            textColor="white"
-            className="w-full"
-          />
+          <div data-testid="vote-button">
+            <ButtonHero
+              href={`/dashboard/user/pemilihan/vote/${election.id}`}
+              text="Vote Sekarang"
+              disabled={checkVoteTime(election)}
+              variant="white"
+              textColor="secondary"
+              className="w-full border border-secondary"
+            />
+          </div>
+          <div data-testid="result-button">
+            <ButtonHero
+              href={`/dashboard/user/pemilihan/${election.id}`}
+              text="Lihat Hasil"
+              variant="secondary"
+              textColor="white"
+              className="w-full"
+            />
+          </div>
         </div>
       </div>
     </div>

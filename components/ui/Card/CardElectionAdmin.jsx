@@ -1,24 +1,24 @@
-"use client";
+'use client';
 
-import Image from "next/image";
-import { IoCalendarOutline } from "react-icons/io5";
-import dayjs from "dayjs";
-import "dayjs/locale/id";
-import { FiUser } from "react-icons/fi";
-import ButtonHero from "../Button/ButtonHero";
-import Spinner from "../Spinner/Spinner";
-import { useActionState, useEffect } from "react";
-import { deleteElectionAction } from "@/app/actions";
-import { toast } from "react-toastify";
-import { useElectionStore } from "@/store/electionStore";
+import Image from 'next/image';
+import { IoCalendarOutline } from 'react-icons/io5';
+import dayjs from 'dayjs';
+import 'dayjs/locale/id';
+import { FiUser } from 'react-icons/fi';
+import ButtonHero from '../Button/ButtonHero';
+import Spinner from '../Spinner/Spinner';
+import { useActionState, useEffect } from 'react';
+import { deleteElectionAction } from '@/app/actions';
+import { toast } from 'react-toastify';
+import { useElectionStore } from '@/store/electionStore';
 
 const initialState = {
-  message: "",
+  message: '',
 };
 
 export default function CardElectionAdmin({ election }) {
   const getTime = (date) => {
-    return dayjs(date).locale("id").format("DD MMMM YYYY HH.mm");
+    return dayjs(date).locale('id').format('DD MMMM YYYY HH.mm');
   };
 
   const { refreshElections } = useElectionStore();
@@ -39,7 +39,7 @@ export default function CardElectionAdmin({ election }) {
 
     if (state.success) {
       toast.success(state.message, {
-        theme: "light",
+        theme: 'light',
         autoClose: 1000,
       });
       refreshElections();
@@ -47,14 +47,17 @@ export default function CardElectionAdmin({ election }) {
 
     if (!state.success && state.message) {
       toast.error(state.message, {
-        theme: "light",
+        theme: 'light',
         autoClose: 1000,
       });
     }
   }, [state]);
 
   return (
-    <div className="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300 flex flex-col h-full">
+    <div
+      className="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300 flex flex-col h-full"
+      data-testid={`election-card-${election.id}`}
+    >
       <div className="bg-indigo-100 h-48 flex">
         {election.candidates.length > 0 ? (
           election.candidates.map((candidate, index) => (
@@ -71,7 +74,7 @@ export default function CardElectionAdmin({ election }) {
               />
               <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/50 to-transparent p-2">
                 <p className="text-white text-xs font-medium text-center">
-                  {candidate.name || "Unknown"}
+                  {candidate.name || 'Unknown'}
                 </p>
               </div>
             </div>
@@ -106,7 +109,7 @@ export default function CardElectionAdmin({ election }) {
             <div key={index} className="flex items-center">
               <FiUser className="w-4 h-4 mr-2 text-indigo-500" />
               <p className="text-sm text-gray-600">
-                Kandidat {index + 1}:{" "}
+                Kandidat {index + 1}:{' '}
                 <span className="font-medium">{candidate.name}</span>
               </p>
             </div>
@@ -120,7 +123,7 @@ export default function CardElectionAdmin({ election }) {
               data-testid={`delete-election-${election.id}`}
               className="px-4 sm:px-8 py-3 w-full inline-flex justify-center items-center rounded-[10px] bg-white hover:bg-white/80 cursor-pointer text-red-600 border border-red-500 font-medium"
             >
-              {pending ? <Spinner variant="red-600" /> : "Hapus Pemilihan"}
+              {pending ? <Spinner variant="red-600" /> : 'Hapus Pemilihan'}
             </button>
           </form>
           <ButtonHero

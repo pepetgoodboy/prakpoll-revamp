@@ -1,11 +1,11 @@
-"use client";
+'use client';
 
-import { Bar } from "react-chartjs-2";
-import Chart from "chart.js/auto";
-import { useState, useEffect } from "react";
-import { useElectionStore } from "@/store/electionStore";
-import CardSummaryElection from "../Card/CardSummaryElection";
-import { useUserStore } from "@/store/userStore";
+import { Bar } from 'react-chartjs-2';
+import Chart from 'chart.js/auto';
+import { useState, useEffect } from 'react';
+import { useElectionStore } from '@/store/electionStore';
+import CardSummaryElection from '../Card/CardSummaryElection';
+import { useUserStore } from '@/store/userStore';
 
 export default function ElectionChart({
   id,
@@ -26,15 +26,16 @@ export default function ElectionChart({
     initializePusher();
 
     const event =
-      user.role === "Admin" ? "update-result-admin" : "update-result-user";
+      user.role === 'Admin' ? 'update-result-admin' : 'update-result-user';
 
     subscribeToElection(electionId, event, (newData) => {
       setChartData(newData.chart);
       const resultUpdatedElection =
-        user.role === "Admin"
+        user.role === 'Admin'
           ? newData.resultUpdatedElectionAdmin
           : newData.resultUpdatedElectionUser;
       setResultElectionData(resultUpdatedElection);
+      // console.log(newData);
     });
 
     return () => {

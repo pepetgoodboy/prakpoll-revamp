@@ -1,11 +1,12 @@
-import { create } from "zustand";
-import { getAllElectionsAction } from "@/app/actions";
-import Pusher from "pusher-js";
+import { create } from 'zustand';
+import { getAllElectionsAction, getAllEligibilityAction } from '@/app/actions';
+import Pusher from 'pusher-js';
 
 export const useElectionStore = create((set, get) => ({
   openElectionModal: false,
-  candidates: [{ name: "", vision: "", mission: "" }],
+  candidates: [{ name: '', vision: '', mission: '' }],
   elections: [],
+  eligibility: [],
   loading: false,
   pusher: null,
   channels: {},
@@ -13,7 +14,7 @@ export const useElectionStore = create((set, get) => ({
     set((state) => ({ openElectionModal: !state.openElectionModal })),
   addCandidate: () =>
     set((state) => ({
-      candidates: [...state.candidates, { name: "", vision: "", mission: "" }],
+      candidates: [...state.candidates, { name: '', vision: '', mission: '' }],
     })),
   removeCandidate: (index) =>
     set((state) => ({
@@ -38,10 +39,25 @@ export const useElectionStore = create((set, get) => ({
         elections: Array.isArray(updatedElections) ? updatedElections : [],
       });
       set({ loading: false });
-      set({ candidates: [{ name: "", vision: "", mission: "" }] });
+      set({ candidates: [{ name: '', vision: '', mission: '' }] });
     } catch (error) {
-      console.error("Error refreshing elections:", error);
+      console.error('Error refreshing elections:', error);
       set({ elections: [] });
+    }
+  },
+  refreshEligibility: async () => {
+    try {
+      set({ loading: true });
+      const updatedEligibility = await getAllEligibilityAction();
+      set({
+        eligibility: Array.isArray(updatedEligibility)
+          ? updatedEligibility
+          : [],
+      });
+      set({ loading: false });
+    } catch (error) {
+      console.error('Error refreshing eligibility:', error);
+      set({ eligibility: [] });
     }
   },
 

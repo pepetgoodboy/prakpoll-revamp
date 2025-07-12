@@ -1,29 +1,24 @@
-"use client";
+'use client';
 
-import ButtonFormAdmin from "../Button/ButtonFormAdmin";
-import Link from "next/link";
-import SelectUkm from "../Select/SelectUkm";
-import LabelFormAdmin from "../Label/LabelFormAdmin";
-import InputFormProfile from "../Input/InputFormProfile";
-import { useUserStore } from "@/store/userStore";
-import { editProfileUser } from "@/app/actions";
-import { useActionState, useEffect } from "react";
-import { useRouter } from "next/navigation";
-import { toast } from "react-toastify";
-import Spinner from "../Spinner/Spinner";
+import ButtonFormAdmin from '../Button/ButtonFormAdmin';
+import Link from 'next/link';
+import SelectUkm from '../Select/SelectUkm';
+import LabelFormAdmin from '../Label/LabelFormAdmin';
+import InputFormProfile from '../Input/InputFormProfile';
+import { useUserStore } from '@/store/userStore';
+import { editProfileUser } from '@/app/actions';
+import { useActionState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
+import { toast } from 'react-toastify';
+import Spinner from '../Spinner/Spinner';
 
 const initialState = {
-  message: "",
+  message: '',
 };
 
 export default function FormEditProfile() {
   const router = useRouter();
   const user = useUserStore((state) => state.user);
-
-  const studyProgramOrPositionMap = {
-    Manajemen_Informatika: "Manajemen Informatika",
-    Manajemen_Bisnis_Digital: "Manajemen Bisnis Digital",
-  };
 
   const [state, formAction, pending] = useActionState(
     editProfileUser,
@@ -31,19 +26,23 @@ export default function FormEditProfile() {
   );
 
   useEffect(() => {
+    useUserStore.getState().refreshUkm();
+  }, []);
+
+  useEffect(() => {
     if (!state) return;
 
     if (state.success) {
       router.refresh();
-      toast.success(state.message || "Profil berhasil diubah.", {
-        theme: "light",
+      toast.success(state.message || 'Profil berhasil diubah.', {
+        theme: 'light',
         autoClose: 1000,
       });
     }
 
     if (!state.success && state.message) {
-      toast.error(state.message || "Gagal mengubah profil!", {
-        theme: "light",
+      toast.error(state.message || 'Gagal mengubah profil!', {
+        theme: 'light',
         autoClose: 1000,
       });
     }
@@ -75,13 +74,12 @@ export default function FormEditProfile() {
         <div className="flex flex-col gap-2">
           <p className="text-gray-900 font-medium">Program Studi / Jabatan</p>
           <span className="w-full max-w-xs xl:max-w-md py-2 px-4 text-gray-500 bg-gray-100 rounded-lg border border-gray-300">
-            {studyProgramOrPositionMap[user.studyProgramOrPosition] ||
-              user.studyProgramOrPosition}
+            {user.studyProgramOrPosition}
           </span>
         </div>
         <div className="flex flex-col gap-2">
           <LabelFormAdmin htmlFor="ukm" text="UKM" />
-          <SelectUkm defaultValue={user?.ukm} />
+          <SelectUkm defaultValue={user.ukmId} />
         </div>
       </div>
       <div className="flex justify-end gap-2 md:gap-4">
@@ -92,12 +90,14 @@ export default function FormEditProfile() {
             hoverVariant="red-500/90"
           />
         </Link>
-        <ButtonFormAdmin
-          type="submit"
-          text={pending ? <Spinner /> : "Simpan Perubahan"}
-          variant="secondary"
-          hoverVariant="secondary/90"
-        />
+        <div data-testid="submit-edit-profile">
+          <ButtonFormAdmin
+            type="submit"
+            text={pending ? <Spinner /> : 'Simpan Perubahan'}
+            variant="secondary"
+            hoverVariant="secondary/90"
+          />
+        </div>
       </div>
     </form>
   );

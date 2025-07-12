@@ -1,16 +1,16 @@
-import { prisma } from "@/lib/prisma";
-import { cookies } from "next/headers";
-import jwt from "jsonwebtoken";
-import { NextResponse } from "next/server";
+import { prisma } from '@/lib/prisma';
+import { cookies } from 'next/headers';
+import jwt from 'jsonwebtoken';
+import { NextResponse } from 'next/server';
 
 export const authMiddleware = (handler) => {
   return async (request, context) => {
     const params = await context.params;
     const cookieStore = await cookies();
-    const token = cookieStore.get("token");
+    const token = cookieStore.get('token');
 
     if (!token) {
-      return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
+      return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
     }
 
     try {
@@ -18,17 +18,35 @@ export const authMiddleware = (handler) => {
 
       const user = await prisma.users.findUnique({
         where: { id: decoded.id },
-        select: { id: true, studyProgramOrPosition: true, ukm: true },
+        select: {
+          id: true,
+          studyProgramOrPosition: {
+            select: {
+              name: true,
+            },
+          },
+          ukm: {
+            select: {
+              name: true,
+            },
+          },
+        },
       });
 
-      if (!user) {
+      const formattedUser = {
+        id: user.id,
+        studyProgramOrPosition: user.studyProgramOrPosition.name,
+        ukm: user.ukm.name,
+      };
+
+      if (!formattedUser) {
         return NextResponse.json(
-          { message: "User not found" },
+          { message: 'User not found' },
           { status: 404 }
         );
       }
 
-      request.user = user;
+      request.user = formattedUser;
 
       return handler(request, params);
     } catch (error) {
@@ -41,10 +59,10 @@ export const adminMiddleware = (handler) => {
   return async (request, context) => {
     const params = await context.params;
     const cookieStore = await cookies();
-    const token = cookieStore.get("token");
+    const token = cookieStore.get('token');
 
     if (!token) {
-      return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
+      return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
     }
 
     try {
@@ -57,13 +75,13 @@ export const adminMiddleware = (handler) => {
 
       if (!user) {
         return NextResponse.json(
-          { message: "User not found" },
+          { message: 'User not found' },
           { status: 404 }
         );
       }
 
-      if (user.role !== "Admin") {
-        return NextResponse.json({ message: "Forbidden" }, { status: 403 });
+      if (user.role !== 'Admin') {
+        return NextResponse.json({ message: 'Forbidden' }, { status: 403 });
       }
 
       return handler(request, params);

@@ -1,11 +1,12 @@
-import { useElectionStore } from "@/store/electionStore";
-import Spinner from "../Spinner/Spinner";
-import LabelFormAdmin from "../Label/LabelFormAdmin";
-import InputFormAdmin from "../Input/InputFormAdmin";
-import SelectTypeElection from "../Select/SelectTypeElection";
-import SelectEligibilityElection from "../Select/SelectEligibilityElection";
-import ButtonFormAdmin from "../Button/ButtonFormAdmin";
-import TextAreaFormAdmin from "../Textarea/TextAreaFormAdmin";
+import { useElectionStore } from '@/store/electionStore';
+import Spinner from '../Spinner/Spinner';
+import LabelFormAdmin from '../Label/LabelFormAdmin';
+import InputFormAdmin from '../Input/InputFormAdmin';
+import SelectTypeElection from '../Select/SelectTypeElection';
+import SelectEligibilityElection from '../Select/SelectEligibilityElection';
+import ButtonFormAdmin from '../Button/ButtonFormAdmin';
+import TextAreaFormAdmin from '../Textarea/TextAreaFormAdmin';
+import { useEffect } from 'react';
 
 export default function FormAddElection({
   formAction,
@@ -15,6 +16,10 @@ export default function FormAddElection({
 }) {
   const { candidates, addCandidate, removeCandidate, toggleModalAddElection } =
     useElectionStore();
+
+  useEffect(() => {
+    useElectionStore.getState().refreshEligibility();
+  }, []);
 
   return (
     <form
@@ -138,7 +143,7 @@ export default function FormAddElection({
                     <Spinner />
                   </div>
                 ) : (
-                  "Tambah Pemilihan"
+                  'Tambah Pemilihan'
                 )
               }
             />
