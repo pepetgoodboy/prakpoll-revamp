@@ -1,0 +1,16 @@
+services:
+  prakpoll:
+    container_name: prakpoll
+    build: .
+    image: prakpoll:1.0.0
+    ports:
+      - "3000:3000"
+    env_file:
+      - .env
+    restart: unless-stopped
+    networks:
+      - main-network
+
+networks:
+  main-network:
+    external: true
