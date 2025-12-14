@@ -4,6 +4,8 @@ import Image from 'next/image';
 import { IoCalendarOutline } from 'react-icons/io5';
 import dayjs from 'dayjs';
 import 'dayjs/locale/id';
+import utc from 'dayjs/plugin/utc';
+import timezone from 'dayjs/plugin/timezone';
 import { FiUser } from 'react-icons/fi';
 import ButtonHero from '../Button/ButtonHero';
 import Spinner from '../Spinner/Spinner';
@@ -16,10 +18,16 @@ const initialState = {
   message: '',
 };
 
+dayjs.extend(utc);
+dayjs.extend(timezone);
+
 export default function CardElectionAdmin({ election }) {
   const getTime = (date) => {
-    return dayjs(date).locale('id').format('DD MMMM YYYY HH.mm');
-  };
+      return dayjs(date)
+        .tz('Asia/Jakarta')
+        .locale('id')
+        .format('DD MMMM YYYY HH.mm');
+    };
 
   const { refreshElections } = useElectionStore();
 

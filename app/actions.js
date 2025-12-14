@@ -1,23 +1,23 @@
-'use server';
-import { cookies } from 'next/headers';
-import { redirect } from 'next/navigation';
-import jwt from 'jsonwebtoken';
-import { revalidatePath } from 'next/cache';
+"use server";
+import { cookies } from "next/headers";
+import { redirect } from "next/navigation";
+import jwt from "jsonwebtoken";
+import { revalidatePath } from "next/cache";
 
 export async function registerAction(prevData, formData) {
   try {
     const response = await fetch(
       `${process.env.NEXT_PUBLIC_URL}/api/users/register`,
       {
-        method: 'PATCH',
+        method: "PATCH",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
-        credentials: 'include',
+        credentials: "include",
         body: JSON.stringify({
-          npm: formData.get('npm'),
-          password: formData.get('password'),
-          verifCode: formData.get('verifCode'),
+          npm: formData.get("npm"),
+          password: formData.get("password"),
+          verifCode: formData.get("verifCode"),
         }),
       }
     );
@@ -28,9 +28,9 @@ export async function registerAction(prevData, formData) {
       return { message: data.message };
     }
 
-    return { success: true, redirectTo: '/login' };
+    return { success: true, redirectTo: "/login" };
   } catch (error) {
-    console.error('Error checking authentication:', error.message);
+    console.error("Error checking authentication:", error.message);
     return { success: false, message: error.message };
   }
 }
@@ -40,14 +40,14 @@ export async function loginAction(prevState, formData) {
     const response = await fetch(
       `${process.env.NEXT_PUBLIC_URL}/api/users/login`,
       {
-        method: 'POST',
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
-        credentials: 'include',
+        credentials: "include",
         body: JSON.stringify({
-          npm: formData.get('npm'),
-          password: formData.get('password'),
+          npm: formData.get("npm"),
+          password: formData.get("password"),
         }),
       }
     );
@@ -60,9 +60,9 @@ export async function loginAction(prevState, formData) {
 
     if (data.token) {
       const cookieStore = await cookies();
-      cookieStore.set('token', data.token, {
+      cookieStore.set("token", data.token, {
         maxAge: 60 * 60 * 24 * 7,
-        path: '/',
+        path: "/",
       });
     }
 
@@ -72,35 +72,35 @@ export async function loginAction(prevState, formData) {
     return {
       success: true,
       message: data.message,
-      redirectTo: role === 'Admin' ? '/dashboard/admin' : '/dashboard/user',
+      redirectTo: role === "Admin" ? "/dashboard/admin" : "/dashboard/user",
     };
   } catch (error) {
-    console.error('Error checking authentication:', error.message);
+    console.error("Error checking authentication:", error.message);
     return { success: false, message: error.message };
   }
 }
 
 export async function editProfileUser(prevState, formData) {
   const cookieStore = await cookies();
-  const token = cookieStore.get('token');
+  const token = cookieStore.get("token");
 
   if (!token) {
     return null;
   }
 
   try {
-    const fullname = formData.get('fullname');
-    const ukm = formData.get('ukm');
+    const fullname = formData.get("fullname");
+    const ukm = formData.get("ukm");
 
     const response = await fetch(
       `${process.env.NEXT_PUBLIC_URL}/api/users/profile/edit`,
       {
-        method: 'PATCH',
+        method: "PATCH",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
           Cookie: `token=${token.value}`,
         },
-        credentials: 'include',
+        credentials: "include",
         body: JSON.stringify({
           fullname,
           ukmId: ukm,
@@ -119,21 +119,21 @@ export async function editProfileUser(prevState, formData) {
       message: result.message,
     };
   } catch (error) {
-    console.error('Error updating profie', error.message);
+    console.error("Error updating profie", error.message);
     return { success: false, message: error.message };
   }
 }
 
 export async function logoutAction() {
   const cookieStore = await cookies();
-  cookieStore.delete('token');
+  cookieStore.delete("token");
 
-  redirect('/login');
+  redirect("/login");
 }
 
 export async function getAllUsersAction() {
   const cookieStore = await cookies();
-  const token = cookieStore.get('token');
+  const token = cookieStore.get("token");
 
   if (!token) {
     return null;
@@ -141,23 +141,23 @@ export async function getAllUsersAction() {
 
   try {
     const response = await fetch(`${process.env.NEXT_PUBLIC_URL}/api/users`, {
-      method: 'GET',
+      method: "GET",
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
         Cookie: `token=${token.value}`,
       },
-      credentials: 'include',
+      credentials: "include",
     });
     const result = await response.json();
     return result.data;
   } catch (error) {
-    console.error('Error get all users:', error.message);
+    console.error("Error get all users:", error.message);
   }
 }
 
 export async function getAllStudyOrPositionAction() {
   const cookieStore = await cookies();
-  const token = cookieStore.get('token');
+  const token = cookieStore.get("token");
 
   if (!token) {
     return null;
@@ -167,24 +167,24 @@ export async function getAllStudyOrPositionAction() {
     const response = await fetch(
       `${process.env.NEXT_PUBLIC_URL}/api/users/study-or-position`,
       {
-        method: 'GET',
+        method: "GET",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
           Cookie: `token=${token.value}`,
         },
-        credentials: 'include',
+        credentials: "include",
       }
     );
     const result = await response.json();
     return result.data;
   } catch (error) {
-    console.error('Error get all study or position:', error.message);
+    console.error("Error get all study or position:", error.message);
   }
 }
 
 export async function getAllUkmAction() {
   const cookieStore = await cookies();
-  const token = cookieStore.get('token');
+  const token = cookieStore.get("token");
 
   if (!token) {
     return null;
@@ -194,24 +194,24 @@ export async function getAllUkmAction() {
     const response = await fetch(
       `${process.env.NEXT_PUBLIC_URL}/api/users/ukm`,
       {
-        method: 'GET',
+        method: "GET",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
           Cookie: `token=${token.value}`,
         },
-        credentials: 'include',
+        credentials: "include",
       }
     );
     const result = await response.json();
     return result.data;
   } catch (error) {
-    console.error('Error get all ukm:', error.message);
+    console.error("Error get all ukm:", error.message);
   }
 }
 
 export async function addUserAction(prevData, formData) {
   const cookieStore = await cookies();
-  const token = cookieStore.get('token');
+  const token = cookieStore.get("token");
 
   if (!token) {
     return null;
@@ -221,15 +221,15 @@ export async function addUserAction(prevData, formData) {
     const response = await fetch(
       `${process.env.NEXT_PUBLIC_URL}/api/users/create`,
       {
-        method: 'POST',
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
           Cookie: `token=${token.value}`,
         },
         body: JSON.stringify({
-          npm: formData.get('npm'),
-          fullname: formData.get('fullname'),
-          studyId: formData.get('studyProgramOrPosition'),
+          npm: formData.get("npm"),
+          fullname: formData.get("fullname"),
+          studyId: formData.get("studyProgramOrPosition"),
         }),
       }
     );
@@ -240,16 +240,16 @@ export async function addUserAction(prevData, formData) {
       return { message: data.message };
     }
 
-    revalidatePath('/dashboard/admin/users');
+    revalidatePath("/dashboard/admin/users");
     return { success: true, message: data.message };
   } catch (error) {
-    console.error('Error adding user:', error.message);
+    console.error("Error adding user:", error.message);
   }
 }
 
 export async function deleteUserAction(prevData, id) {
   const cookieStore = await cookies();
-  const token = cookieStore.get('token');
+  const token = cookieStore.get("token");
 
   if (!token) {
     return null;
@@ -259,9 +259,9 @@ export async function deleteUserAction(prevData, id) {
     const response = await fetch(
       `${process.env.NEXT_PUBLIC_URL}/api/users/delete/${id}`,
       {
-        method: 'DELETE',
+        method: "DELETE",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
           Cookie: `token=${token.value}`,
         },
       }
@@ -272,10 +272,10 @@ export async function deleteUserAction(prevData, id) {
     if (!response.ok) {
       return { message: data.message };
     }
-    revalidatePath('/dashboard/admin/users');
+    revalidatePath("/dashboard/admin/users");
     return { success: true, message: data.message };
   } catch (error) {
-    console.error('Error deleting user:', error.message);
+    console.error("Error deleting user:", error.message);
   }
 }
 
@@ -284,9 +284,9 @@ export async function getElectionsHomeAction() {
     const response = await fetch(
       `${process.env.NEXT_PUBLIC_URL}/api/elections/list-home`,
       {
-        method: 'GET',
+        method: "GET",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
       }
     );
@@ -298,13 +298,13 @@ export async function getElectionsHomeAction() {
 
     return result.data;
   } catch (error) {
-    console.error('Error get all election:', error.message);
+    console.error("Error get all election:", error.message);
   }
 }
 
 export async function getAllElectionsAction() {
   const cookieStore = await cookies();
-  const token = cookieStore.get('token');
+  const token = cookieStore.get("token");
 
   if (!token) {
     return null;
@@ -314,12 +314,12 @@ export async function getAllElectionsAction() {
     const response = await fetch(
       `${process.env.NEXT_PUBLIC_URL}/api/elections`,
       {
-        method: 'GET',
+        method: "GET",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
           Cookie: `token=${token.value}`,
         },
-        credentials: 'include',
+        credentials: "include",
       }
     );
     const result = await response.json();
@@ -330,13 +330,13 @@ export async function getAllElectionsAction() {
 
     return result.data;
   } catch (error) {
-    console.error('Error get all election:', error.message);
+    console.error("Error get all election:", error.message);
   }
 }
 
 export async function getAllElectionsUserAction() {
   const cookieStore = await cookies();
-  const token = cookieStore.get('token');
+  const token = cookieStore.get("token");
 
   if (!token) {
     return null;
@@ -346,12 +346,12 @@ export async function getAllElectionsUserAction() {
     const response = await fetch(
       `${process.env.NEXT_PUBLIC_URL}/api/elections/list`,
       {
-        method: 'GET',
+        method: "GET",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
           Cookie: `token=${token.value}`,
         },
-        credentials: 'include',
+        credentials: "include",
       }
     );
     const result = await response.json();
@@ -362,13 +362,13 @@ export async function getAllElectionsUserAction() {
 
     return result.data;
   } catch (error) {
-    console.error('Error get all election:', error.message);
+    console.error("Error get all election:", error.message);
   }
 }
 
 export async function getElectionByIdAction(id) {
   const cookieStore = await cookies();
-  const token = cookieStore.get('token');
+  const token = cookieStore.get("token");
 
   if (!token) {
     return null;
@@ -378,12 +378,12 @@ export async function getElectionByIdAction(id) {
     const response = await fetch(
       `${process.env.NEXT_PUBLIC_URL}/api/elections/${id}`,
       {
-        method: 'GET',
+        method: "GET",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
           Cookie: `token=${token.value}`,
         },
-        credentials: 'include',
+        credentials: "include",
       }
     );
     const result = await response.json();
@@ -394,13 +394,13 @@ export async function getElectionByIdAction(id) {
 
     return result.data;
   } catch (error) {
-    console.error('Error get election:', error.message);
+    console.error("Error get election:", error.message);
   }
 }
 
 export async function deleteElectionAction(prevState, id) {
   const cookieStore = await cookies();
-  const token = cookieStore.get('token');
+  const token = cookieStore.get("token");
 
   if (!token) {
     return null;
@@ -411,9 +411,9 @@ export async function deleteElectionAction(prevState, id) {
       `
       ${process.env.NEXT_PUBLIC_URL}/api/elections/delete/${id}`,
       {
-        method: 'DELETE',
+        method: "DELETE",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
           Cookie: `token=${token.value}`,
         },
       }
@@ -425,17 +425,17 @@ export async function deleteElectionAction(prevState, id) {
       return { message: data.message };
     }
 
-    revalidatePath('/dashboard/admin/pemilihan');
+    revalidatePath("/dashboard/admin/pemilihan");
 
     return { success: true, message: data.message };
   } catch (error) {
-    console.error('Error deleting election:', error.message);
+    console.error("Error deleting election:", error.message);
   }
 }
 
 export async function getAllEligibilityAction() {
   const cookieStore = await cookies();
-  const token = cookieStore.get('token');
+  const token = cookieStore.get("token");
 
   if (!token) {
     return null;
@@ -445,31 +445,34 @@ export async function getAllEligibilityAction() {
     const response = await fetch(
       `${process.env.NEXT_PUBLIC_URL}/api/elections/eligibility`,
       {
-        method: 'GET',
+        method: "GET",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
           Cookie: `token=${token.value}`,
         },
-        credentials: 'include',
+        credentials: "include",
       }
     );
     const result = await response.json();
     return result.data;
   } catch (error) {
-    console.error('Error get all ukm:', error.message);
+    console.error("Error get all ukm:", error.message);
   }
 }
 
 export async function createElectionAction(prevData, formData) {
   try {
-    const title = formData.get('title');
-    const type = formData.get('type');
-    const eligibility = formData.get('eligibility');
-    const startDate = formData.get('startDate');
-    const endDate = formData.get('endDate');
+    const title = formData.get("title");
+    const type = formData.get("type");
+    const eligibility = formData.get("eligibility");
+    const startDate = formData.get("startDate");
+    const endDate = formData.get("endDate");
 
-    const formattedStartDate = startDate.replace('T', ' ');
-    const formattedEndDate = endDate.replace('T', ' ');
+    const formattedStartDate = startDate.replace("T", " ");
+
+    const formattedEndDate = endDate.replace("T", " ");
+
+    console.log(formattedStartDate, formattedEndDate);
 
     const candidates = [];
     let index = 0;
@@ -484,19 +487,19 @@ export async function createElectionAction(prevData, formData) {
     }
 
     const cookieStore = await cookies();
-    const token = cookieStore.get('token');
+    const token = cookieStore.get("token");
 
     if (!token) {
       return null;
     }
 
     const requestBody = new FormData();
-    requestBody.append('title', title);
-    requestBody.append('type', type);
-    requestBody.append('eligibilityId', eligibility);
-    requestBody.append('startDate', formattedStartDate);
-    requestBody.append('endDate', formattedEndDate);
-    requestBody.append('candidates', JSON.stringify(candidates));
+    requestBody.append("title", title);
+    requestBody.append("type", type);
+    requestBody.append("eligibilityId", eligibility);
+    requestBody.append("startDate", formattedStartDate);
+    requestBody.append("endDate", formattedEndDate);
+    requestBody.append("candidates", JSON.stringify(candidates));
 
     for (let i = 0; i < candidates.length; i++) {
       const image = formData.get(`candidateImage${i + 1}`);
@@ -508,11 +511,11 @@ export async function createElectionAction(prevData, formData) {
     const response = await fetch(
       `${process.env.NEXT_PUBLIC_URL}/api/elections/create`,
       {
-        method: 'POST',
+        method: "POST",
         headers: {
           Cookie: `token=${token.value}`,
         },
-        credentials: 'include',
+        credentials: "include",
         body: requestBody,
       }
     );
@@ -523,19 +526,19 @@ export async function createElectionAction(prevData, formData) {
       return { message: data.message };
     }
 
-    revalidatePath('/dashboard/admin/pemilihan');
+    revalidatePath("/dashboard/admin/pemilihan");
     return {
       success: true,
       message: data.message,
     };
   } catch (error) {
-    console.error('Error add election:', error.message);
+    console.error("Error add election:", error.message);
   }
 }
 
 export async function getElectionResultAdmin(idElection) {
   const cookieStore = await cookies();
-  const token = cookieStore.get('token');
+  const token = cookieStore.get("token");
 
   if (!token) {
     return null;
@@ -545,12 +548,12 @@ export async function getElectionResultAdmin(idElection) {
     const response = await fetch(
       `${process.env.NEXT_PUBLIC_URL}/api/elections/result-admin/${idElection}`,
       {
-        method: 'GET',
+        method: "GET",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
           Cookie: `token=${token.value}`,
         },
-        credentials: 'include',
+        credentials: "include",
       }
     );
 
@@ -561,13 +564,13 @@ export async function getElectionResultAdmin(idElection) {
     }
     return result.data;
   } catch (error) {
-    console.error('Error get election:', error.message);
+    console.error("Error get election:", error.message);
   }
 }
 
 export async function getElectionResultUser(idElection) {
   const cookieStore = await cookies();
-  const token = cookieStore.get('token');
+  const token = cookieStore.get("token");
 
   if (!token) {
     return null;
@@ -577,12 +580,12 @@ export async function getElectionResultUser(idElection) {
     const response = await fetch(
       `${process.env.NEXT_PUBLIC_URL}/api/elections/result/${idElection}`,
       {
-        method: 'GET',
+        method: "GET",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
           Cookie: `token=${token.value}`,
         },
-        credentials: 'include',
+        credentials: "include",
       }
     );
 
@@ -593,13 +596,13 @@ export async function getElectionResultUser(idElection) {
     }
     return result.data;
   } catch (error) {
-    console.error('Error get election:', error.message);
+    console.error("Error get election:", error.message);
   }
 }
 
 export async function addVoteAction(prevData, electionId, candidateId) {
   const cookieStore = await cookies();
-  const token = cookieStore.get('token');
+  const token = cookieStore.get("token");
 
   if (!token) {
     return null;
@@ -609,12 +612,12 @@ export async function addVoteAction(prevData, electionId, candidateId) {
     const response = await fetch(
       `${process.env.NEXT_PUBLIC_URL}/api/vote/add/${electionId}/${candidateId}`,
       {
-        method: 'POST',
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
           Cookie: `token=${token.value}`,
         },
-        credentials: 'include',
+        credentials: "include",
       }
     );
 
@@ -624,14 +627,14 @@ export async function addVoteAction(prevData, electionId, candidateId) {
       return { message: result.message };
     }
 
-    revalidatePath('/dashboard/user/pemilihan');
+    revalidatePath("/dashboard/user/pemilihan");
 
     return {
       success: true,
       message: result.message,
-      redirectTo: '/dashboard/user/pemilihan',
+      redirectTo: "/dashboard/user/pemilihan",
     };
   } catch (error) {
-    console.error('Error add vote:', error.message);
+    console.error("Error add vote:", error.message);
   }
 }
